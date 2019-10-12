@@ -42,5 +42,6 @@
   },
   "jest": {
     "preset": "jest-preset-preact"
-  }
+  },
+  "proxy": "http://localhost:8000"
 }

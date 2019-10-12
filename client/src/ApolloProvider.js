@@ -7,7 +7,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import App from './components/app';
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:8000/graphql'
+    uri: '/graphql'
 });
 
 const client = new ApolloClient({
