@@ -29,6 +29,10 @@
     "preact-render-spy": "^1.2.1"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.2",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-http": "^1.5.16",
     "preact": "^10.0.0",
     "preact-render-to-string": "^5.0.6",
     "preact-router": "^3.0.1"

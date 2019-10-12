@@ -1,4 +1,6 @@
-import './style';
-import App from './components/app';
+import { render } from 'preact';
 
-export default App;
+import './style';
+import ApolloProvider from './ApolloProvider';
+
+render(ApolloProvider, document.body);
