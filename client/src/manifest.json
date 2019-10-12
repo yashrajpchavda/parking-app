@@ -1,6 +1,6 @@
 {
-  "name": "preact-default",
-  "short_name": "preact-default",
+  "name": "Zimbra Parking App",
+  "short_name": "ZimbraParking",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
