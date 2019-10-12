@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[2],{"+1Jk":function(e,o,n){"use strict";n.r(o);var s=n("hosL"),t=n("FA6U"),c=n.n(t);o.default=()=>Object(s.d)("div",{class:c.a.home},Object(s.d)("h1",null,"Home1234"),Object(s.d)("p",null,"This is the Home component."))},FA6U:function(e){e.exports={home:"home__MseGd"}}}]);
+//# sourceMappingURL=route-home.chunk.bbe4d.esm.js.map
