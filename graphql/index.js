@@ -2,9 +2,24 @@ const { UserInputError, gql } = require('apollo-server-express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { validateAddUserInput } = require('./../util/validators');
+const {
+    validateAddUserInput,
+    validateLoginInput
+} = require('./../util/validators');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
+
+function generateToken(user) {
+    return jwt.sign(
+        {
+            id: user.id,
+            email: user.email,
+            username: user.username
+        },
+        process.env.SECRET_KEY || 'very secret key',
+        { expiresIn: '1h' }
+    );
+}
 
 const typeDefs = gql`
     type ParkingSpot {
@@ -43,6 +58,7 @@ const typeDefs = gql`
     type Mutation {
         createParkingSpot(parkingSpot: ParkingSpotInput): ParkingSpot!
         addUser(addUserInput: AddUserInput): User!
+        login(username: String!, password: String!): User!
     }
 `;
 
@@ -112,21 +128,45 @@ const resolvers = {
 
             const res = await newUser.save();
 
-            const token = jwt.sign(
-                {
-                    id: res.id,
-                    email: res.email,
-                    username: res.username
-                },
-                process.env.SECRET_KEY || 'very secret key',
-                { expiresIn: '1h' }
-            );
+            const token = generateToken(res);
 
             return {
                 // eslint-disable-next-line no-underscore-dangle
                 ...res._doc,
                 // eslint-disable-next-line no-underscore-dangle
                 id: res._id,
+                token
+            };
+        },
+
+        login: async (_, { username, password }) => {
+            const { errors, valid } = validateLoginInput(username, password);
+
+            if (!valid) {
+                throw new UserInputError('Errors', { errors });
+            }
+
+            const user = await User.findOne({ username });
+
+            if (!user) {
+                errors.general = 'User not found';
+                throw new UserInputError('User not found', errors);
+            }
+
+            const match = await bcrypt.compare(password, user.password);
+
+            if (!match) {
+                errors.general = 'Wrong credentials';
+                throw new UserInputError('Wrong credentials', errors);
+            }
+
+            const token = generateToken(user);
+
+            return {
+                // eslint-disable-next-line no-underscore-dangle
+                ...user._doc,
+                // eslint-disable-next-line no-underscore-dangle
+                id: user._id,
                 token
             };
         }
