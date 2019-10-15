@@ -6,6 +6,7 @@ const {
     validateAddUserInput,
     validateLoginInput
 } = require('./../util/validators');
+const checkAuth = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
 
@@ -14,7 +15,8 @@ function generateToken(user) {
         {
             id: user.id,
             email: user.email,
-            username: user.username
+            username: user.username,
+            isAdmin: user.isAdmin
         },
         process.env.SECRET_KEY || 'very secret key',
         { expiresIn: '1h' }
@@ -34,14 +36,11 @@ const typeDefs = gql`
     type User {
         id: ID!
         username: String!
+        displayName: String!
         email: String!
-        createdAt: String!
-        token: String!
-    }
-
-    type Query {
-        sayHi: String!
-        getParkingSpots: [ParkingSpot]!
+        isAdmin: Boolean
+        createdAt: String
+        token: String
     }
 
     input ParkingSpotInput {
@@ -50,26 +49,47 @@ const typeDefs = gql`
 
     input AddUserInput {
         username: String!
+        displayName: String!
         password: String!
         confirmPassword: String!
         email: String!
     }
 
+    input OccupyParkingSpot {
+        number: Int!
+        userId: ID!
+        carId: ID!
+    }
+
+    type Query {
+        sayHi: String!
+        getParkingSpots: [ParkingSpot]!
+        getAllUsers: [User]!
+    }
+
     type Mutation {
-        createParkingSpot(parkingSpot: ParkingSpotInput): ParkingSpot!
+        createParkingSpot(parkingSpot: ParkingSpotInput!): ParkingSpot!
         addUser(addUserInput: AddUserInput): User!
         login(username: String!, password: String!): User!
+        occupyParkingSpot(occupyInput: OccupyParkingSpot!): ParkingSpot!
     }
 `;
 
 const resolvers = {
     Query: {
         sayHi: () => 'Hello Rupam!!!',
-        getParkingSpots: () => ParkingSpot.find()
+        getParkingSpots: async () => {
+            const spots = await ParkingSpot.find();
+            console.log(spots[0]);
+            return spots;
+        },
+        getAllUsers: () => User.find()
     },
 
     Mutation: {
-        createParkingSpot: async (_, { parkingSpot: { number } }) => {
+        createParkingSpot: async (_, { parkingSpot: { number } }, context) => {
+            checkAuth(context);
+
             try {
                 if (!number || number < 1) {
                     throw new UserInputError('Invalid parking spot number');
@@ -94,10 +114,19 @@ const resolvers = {
         },
         addUser: async (
             _,
-            { addUserInput: { username, password, confirmPassword, email } }
+            {
+                addUserInput: {
+                    username,
+                    displayName,
+                    password,
+                    confirmPassword,
+                    email
+                }
+            }
         ) => {
             const { valid, errors } = validateAddUserInput(
                 username,
+                displayName,
                 email,
                 password,
                 confirmPassword
@@ -122,21 +151,13 @@ const resolvers = {
             const newUser = new User({
                 email,
                 username,
+                displayName,
                 password: hashedPassword,
+                isAdmin: false,
                 createdAt: new Date()
             });
 
-            const res = await newUser.save();
-
-            const token = generateToken(res);
-
-            return {
-                // eslint-disable-next-line no-underscore-dangle
-                ...res._doc,
-                // eslint-disable-next-line no-underscore-dangle
-                id: res._id,
-                token
-            };
+            return newUser.save();
         },
 
         login: async (_, { username, password }) => {
@@ -169,6 +190,10 @@ const resolvers = {
                 id: user._id,
                 token
             };
+        },
+
+        occupyParkingSpot: (_, { occupyInput: { number, carId, userId } }) => {
+            // TODO: find the spot by number and update the car and user id
         }
     }
 };

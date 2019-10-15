@@ -1,5 +1,6 @@
 module.exports.validateAddUserInput = (
     username,
+    displayName,
     email,
     password,
     confirmPassword
@@ -8,6 +9,10 @@ module.exports.validateAddUserInput = (
 
     if (username.trim() === '') {
         errors.username = 'Username must not be empty';
+    }
+
+    if (displayName.trim() === '') {
+        errors.displayName = 'Display name must not be empty';
     }
 
     if (email.trim() === '') {
