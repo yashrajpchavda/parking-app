@@ -9,6 +9,7 @@ const {
 const checkAuth = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
+const Car = require('../models/Car');
 
 function generateToken(user) {
     return jwt.sign(
@@ -31,6 +32,8 @@ const typeDefs = gql`
         createdAt: String!
         occupiedAt: String
         releasedAt: String
+        user: User
+        car: Car
     }
 
     type User {
@@ -38,9 +41,16 @@ const typeDefs = gql`
         username: String!
         displayName: String!
         email: String!
+        cars: [Car]
         isAdmin: Boolean
         createdAt: String
         token: String
+    }
+
+    type Car {
+        id: ID!
+        name: String!
+        plate: String!
     }
 
     input ParkingSpotInput {
@@ -53,25 +63,33 @@ const typeDefs = gql`
         password: String!
         confirmPassword: String!
         email: String!
+        cars: [String]
     }
 
-    input OccupyParkingSpot {
-        number: Int!
+    input OccupyParkingSpotInput {
+        spotId: ID!
         userId: ID!
         carId: ID!
+    }
+
+    input CarInput {
+        name: String!
+        plate: String!
     }
 
     type Query {
         sayHi: String!
         getParkingSpots: [ParkingSpot]!
         getAllUsers: [User]!
+        getAllCars: [Car]!
     }
 
     type Mutation {
         createParkingSpot(parkingSpot: ParkingSpotInput!): ParkingSpot!
         addUser(addUserInput: AddUserInput): User!
         login(username: String!, password: String!): User!
-        occupyParkingSpot(occupyInput: OccupyParkingSpot!): ParkingSpot!
+        occupyParkingSpot(occupyInput: OccupyParkingSpotInput!): ParkingSpot!
+        createCar(carInput: CarInput!): Car!
     }
 `;
 
@@ -79,11 +97,13 @@ const resolvers = {
     Query: {
         sayHi: () => 'Hello Rupam!!!',
         getParkingSpots: async () => {
-            const spots = await ParkingSpot.find();
-            console.log(spots[0]);
+            const spots = await ParkingSpot.find()
+                .populate('user')
+                .populate('car');
             return spots;
         },
-        getAllUsers: () => User.find()
+        getAllUsers: async () => User.find().populate('cars'),
+        getAllCars: () => Car.find()
     },
 
     Mutation: {
@@ -120,7 +140,8 @@ const resolvers = {
                     displayName,
                     password,
                     confirmPassword,
-                    email
+                    email,
+                    cars
                 }
             }
         ) => {
@@ -131,6 +152,9 @@ const resolvers = {
                 password,
                 confirmPassword
             );
+
+            // eslint-disable-next-line no-param-reassign
+            cars = cars || [];
 
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
@@ -154,10 +178,13 @@ const resolvers = {
                 displayName,
                 password: hashedPassword,
                 isAdmin: false,
+                cars,
                 createdAt: new Date()
             });
 
-            return newUser.save();
+            await newUser.save();
+
+            return User.findById(newUser.id).populate('cars');
         },
 
         login: async (_, { username, password }) => {
@@ -192,8 +219,35 @@ const resolvers = {
             };
         },
 
-        occupyParkingSpot: (_, { occupyInput: { number, carId, userId } }) => {
+        occupyParkingSpot: async (
+            _,
+            { occupyInput: { spotId, carId, userId } }
+        ) => {
             // TODO: find the spot by number and update the car and user id
+            const parkingSpot = await ParkingSpot.findById(spotId);
+
+            if (parkingSpot) {
+                parkingSpot.user = userId;
+                parkingSpot.car = carId;
+                parkingSpot.isOccupied = true;
+                parkingSpot.occupiedAt = new Date();
+            }
+
+            await parkingSpot.save();
+
+            return ParkingSpot.findById(spotId)
+                .populate('user')
+                .populate('car');
+        },
+
+        createCar: (_, { carInput: { name, plate } }) => {
+            // TODO: Validate user input
+            const car = new Car({
+                name,
+                plate
+            });
+
+            return car.save();
         }
     }
 };

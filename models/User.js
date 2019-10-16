@@ -13,7 +13,8 @@ const userSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Car'
         }
-    ]
+    ],
+    parkingSpot: { type: Schema.Types.ObjectId, ref: 'ParkingSpot' }
 });
 
 const User = model('User', userSchema);
