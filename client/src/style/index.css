@@ -18,3 +18,7 @@ html, body {
 #app {
 	height: 100%;
 }
+
+.page-card .card-header {
+	padding: 8px 16px;
+}
