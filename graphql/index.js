@@ -7,7 +7,8 @@ const {
     validateAddUserInput,
     validateLoginInput,
     validateOccupyParkingSpotInput,
-    validateCreateCarInput
+    validateCreateCarInput,
+    validateAssignCarInput
 } = require('./../util/validators');
 
 // const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
@@ -81,6 +82,11 @@ const typeDefs = gql`
         plate: String!
     }
 
+    input AssignCarInput {
+        userId: ID!
+        carId: ID!
+    }
+
     type Query {
         getParkingSpots: [ParkingSpot]!
         getAllUsers: [User]!
@@ -93,6 +99,8 @@ const typeDefs = gql`
         login(username: String!, password: String!): User!
         toggleParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
         createCar(carInput: CarInput!): Car!
+        assignCarToUser(assignCar: AssignCarInput!): User!
+        unAssignCarFromUser(unAssignCar: AssignCarInput): User!
     }
 `;
 
@@ -279,6 +287,76 @@ const resolvers = {
                 });
 
                 return car.save();
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        assignCarToUser: async (_, { assignCar }) => {
+            const { userId, carId } = assignCar;
+
+            const { valid, errors } = validateAssignCarInput(assignCar);
+
+            if (!valid) {
+                throw new UserInputError('Invalid input', { errors });
+            }
+
+            try {
+                const user = await User.findById(userId);
+                const car = await Car.findById(carId);
+
+                if (!user) {
+                    throw new UserInputError('User not found');
+                }
+
+                if (!car) {
+                    throw new UserInputError('Car not found');
+                }
+
+                // check if car is already assigned to user
+                const index = user.cars.indexOf(carId);
+
+                if (index !== -1) {
+                    throw new UserInputError('Car already assigned to user');
+                }
+
+                user.cars.push(car);
+
+                await user.save();
+
+                return User.findById(userId).populate('cars');
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        unAssignCarFromUser: async (_, { unAssignCar }) => {
+            const { userId, carId } = unAssignCar;
+
+            const { valid, errors } = validateAssignCarInput(unAssignCar);
+
+            if (!valid) {
+                throw new UserInputError('Invalid input', { errors });
+            }
+
+            try {
+                const user = await User.findById(userId);
+
+                if (!user) {
+                    throw new UserInputError('User not found');
+                }
+
+                // find index
+                const index = user.cars.indexOf(carId);
+                if (index === -1) {
+                    throw new Error('Car not assigned to user');
+                }
+
+                user.cars.splice(index, 1);
+
+                await user.save();
+
+                return User.findById(userId).populate('cars');
             } catch (err) {
                 throw new Error(err);
             }

@@ -86,3 +86,20 @@ module.exports.validateCreateCarInput = ({ name, plate }) => {
         valid: Object.keys(errors).length < 1
     };
 };
+
+module.exports.validateAssignCarInput = ({ carId, userId }) => {
+    const errors = {};
+
+    if (!carId || carId.trim() === '') {
+        errors.car = 'Please provide a valid car id';
+    }
+
+    if (!userId || userId.trim() === '') {
+        errors.user = 'Please provide valid user id';
+    }
+
+    return {
+        errors,
+        valid: Object.keys(errors).length < 1
+    };
+};
