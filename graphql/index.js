@@ -10,7 +10,7 @@ const {
     validateCreateCarInput
 } = require('./../util/validators');
 
-const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
+// const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
 const Car = require('../models/Car');
@@ -109,8 +109,8 @@ const resolvers = {
     },
 
     Mutation: {
-        createParkingSpot: async (_, { parkingSpot: { number } }, context) => {
-            checkAdminAuth(context);
+        createParkingSpot: async (_, { parkingSpot: { number } }) => {
+            // checkAdminAuth(context);
 
             try {
                 if (!number || number < 1) {
@@ -145,10 +145,9 @@ const resolvers = {
                     email,
                     cars
                 }
-            },
-            context
+            }
         ) => {
-            checkAdminAuth(context);
+            // checkAdminAuth(context);
             const { valid, errors } = validateAddUserInput(
                 username,
                 displayName,
@@ -223,8 +222,8 @@ const resolvers = {
             };
         },
 
-        toggleParkingSpot: async (_, { toggleInput }, context) => {
-            checkAuth(context);
+        toggleParkingSpot: async (_, { toggleInput }) => {
+            // checkAuth(context);
 
             const { spotId, carId, userId } = toggleInput;
             const { valid, errors } = validateOccupyParkingSpotInput(
@@ -263,8 +262,8 @@ const resolvers = {
             }
         },
 
-        createCar: (_, { carInput }, context) => {
-            checkAdminAuth(context);
+        createCar: (_, { carInput }) => {
+            // checkAdminAuth(context);
 
             const { name, plate } = carInput;
             const { valid, errors } = validateCreateCarInput(carInput);
