@@ -52,3 +52,20 @@ module.exports.validateLoginInput = (username, password) => {
         valid: Object.keys(errors).length < 1
     };
 };
+
+module.exports.validateOccupyParkingSpotInput = ({ spotId, carId, userId }) => {
+    const errors = {};
+
+    if (!spotId) {
+        errors.parkingSpot = 'Parking spot id must be provided';
+    }
+
+    if ((carId && !userId) || (userId && !carId)) {
+        errors.carOrUser = 'Both car and user ids must be provided';
+    }
+
+    return {
+        errors,
+        valid: Object.keys(errors).length < 1
+    };
+};

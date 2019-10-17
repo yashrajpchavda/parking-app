@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 
 const {
     validateAddUserInput,
-    validateLoginInput
+    validateLoginInput,
+    validateOccupyParkingSpotInput
 } = require('./../util/validators');
 const checkAuth = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
@@ -66,10 +67,10 @@ const typeDefs = gql`
         cars: [String]
     }
 
-    input OccupyParkingSpotInput {
+    input ToggleParkingSpotInput {
         spotId: ID!
-        userId: ID!
-        carId: ID!
+        userId: ID
+        carId: ID
     }
 
     input CarInput {
@@ -88,7 +89,7 @@ const typeDefs = gql`
         createParkingSpot(parkingSpot: ParkingSpotInput!): ParkingSpot!
         addUser(addUserInput: AddUserInput): User!
         login(username: String!, password: String!): User!
-        occupyParkingSpot(occupyInput: OccupyParkingSpotInput!): ParkingSpot!
+        toggleParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
         createCar(carInput: CarInput!): Car!
     }
 `;
@@ -219,25 +220,42 @@ const resolvers = {
             };
         },
 
-        occupyParkingSpot: async (
-            _,
-            { occupyInput: { spotId, carId, userId } }
-        ) => {
-            // TODO: find the spot by number and update the car and user id
-            const parkingSpot = await ParkingSpot.findById(spotId);
+        toggleParkingSpot: async (_, { toggleInput }) => {
+            const { spotId, carId, userId } = toggleInput;
+            const { valid, errors } = validateOccupyParkingSpotInput(
+                toggleInput
+            );
 
-            if (parkingSpot) {
-                parkingSpot.user = userId;
-                parkingSpot.car = carId;
-                parkingSpot.isOccupied = true;
-                parkingSpot.occupiedAt = new Date();
+            if (!valid) {
+                throw new UserInputError('Wrong user input', { errors });
             }
 
-            await parkingSpot.save();
+            try {
+                const parkingSpot = await ParkingSpot.findById(spotId);
 
-            return ParkingSpot.findById(spotId)
-                .populate('user')
-                .populate('car');
+                if (parkingSpot) {
+                    parkingSpot.user = userId;
+                    parkingSpot.car = carId;
+
+                    if (userId && carId) {
+                        parkingSpot.isOccupied = true;
+                        parkingSpot.occupiedAt = new Date();
+                    } else {
+                        parkingSpot.isOccupied = false;
+                        parkingSpot.occupiedAt = null;
+                    }
+                } else {
+                    throw new Error('Parking spot not found');
+                }
+
+                await parkingSpot.save();
+
+                return ParkingSpot.findById(spotId)
+                    .populate('user')
+                    .populate('car');
+            } catch (err) {
+                throw new Error(err);
+            }
         },
 
         createCar: (_, { carInput: { name, plate } }) => {
