@@ -69,3 +69,20 @@ module.exports.validateOccupyParkingSpotInput = ({ spotId, carId, userId }) => {
         valid: Object.keys(errors).length < 1
     };
 };
+
+module.exports.validateCreateCarInput = ({ name, plate }) => {
+    const errors = {};
+
+    if (!name || name.trim() === '') {
+        errors.name = 'Please provide valid car name';
+    }
+
+    if (!plate || plate.trim() === '') {
+        errors.plate = 'Please provide valid car plate';
+    }
+
+    return {
+        errors,
+        valid: Object.keys(errors).length < 1
+    };
+};

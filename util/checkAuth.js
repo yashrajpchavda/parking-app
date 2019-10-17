@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { AuthenticationError } = require('apollo-server-express');
 
-module.exports = context => {
+const checkAuth = context => {
     const authHeader = context.req.headers.authorization;
 
     if (authHeader) {
@@ -23,4 +23,21 @@ module.exports = context => {
     }
 
     throw new Error('Authorization header must be provided');
+};
+
+const checkAdminAuth = context => {
+    const user = checkAuth(context);
+
+    if (!user.isAdmin) {
+        throw new AuthenticationError(
+            'You are not authorized to perform this action'
+        );
+    }
+
+    return user;
+};
+
+module.exports = {
+    checkAuth,
+    checkAdminAuth
 };

@@ -1,13 +1,16 @@
 const { UserInputError, gql } = require('apollo-server-express');
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const {
     validateAddUserInput,
     validateLoginInput,
-    validateOccupyParkingSpotInput
+    validateOccupyParkingSpotInput,
+    validateCreateCarInput
 } = require('./../util/validators');
-const checkAuth = require('./../util/checkAuth');
+
+const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
 const Car = require('../models/Car');
@@ -79,7 +82,6 @@ const typeDefs = gql`
     }
 
     type Query {
-        sayHi: String!
         getParkingSpots: [ParkingSpot]!
         getAllUsers: [User]!
         getAllCars: [Car]!
@@ -96,20 +98,19 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        sayHi: () => 'Hello Rupam!!!',
         getParkingSpots: async () => {
             const spots = await ParkingSpot.find()
                 .populate('user')
                 .populate('car');
             return spots;
         },
-        getAllUsers: async () => User.find().populate('cars'),
+        getAllUsers: () => User.find().populate('cars'),
         getAllCars: () => Car.find()
     },
 
     Mutation: {
         createParkingSpot: async (_, { parkingSpot: { number } }, context) => {
-            checkAuth(context);
+            checkAdminAuth(context);
 
             try {
                 if (!number || number < 1) {
@@ -144,8 +145,10 @@ const resolvers = {
                     email,
                     cars
                 }
-            }
+            },
+            context
         ) => {
+            checkAdminAuth(context);
             const { valid, errors } = validateAddUserInput(
                 username,
                 displayName,
@@ -220,7 +223,9 @@ const resolvers = {
             };
         },
 
-        toggleParkingSpot: async (_, { toggleInput }) => {
+        toggleParkingSpot: async (_, { toggleInput }, context) => {
+            checkAuth(context);
+
             const { spotId, carId, userId } = toggleInput;
             const { valid, errors } = validateOccupyParkingSpotInput(
                 toggleInput
@@ -258,14 +263,26 @@ const resolvers = {
             }
         },
 
-        createCar: (_, { carInput: { name, plate } }) => {
-            // TODO: Validate user input
-            const car = new Car({
-                name,
-                plate
-            });
+        createCar: (_, { carInput }, context) => {
+            checkAdminAuth(context);
 
-            return car.save();
+            const { name, plate } = carInput;
+            const { valid, errors } = validateCreateCarInput(carInput);
+
+            if (!valid) {
+                throw new UserInputError('Wrong input', { errors });
+            }
+
+            try {
+                const car = new Car({
+                    name,
+                    plate
+                });
+
+                return car.save();
+            } catch (err) {
+                throw new Error(err);
+            }
         }
     }
 };
