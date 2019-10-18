@@ -4,15 +4,17 @@ import gql from 'graphql-tag';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		flexGrow: 1,
+		flexGrow: 1
 	},
 	paper: {
 		padding: theme.spacing(2),
 		textAlign: 'center',
 		color: theme.palette.text.secondary,
+		minHeight: 120
 	},
 }));
 
@@ -59,40 +61,115 @@ const Home = () => {
 						direction="row"
 						justify="flex-start"
 						alignItems="stretch"
-					 	spacing={1}
+						spacing={1}
+						className={classes.height} 
 					 >
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>1</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>2</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body1" component="p">
+									Empty
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>3</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Sandesh Almaeida
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>4</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Kunal Chandegaonkar
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>5</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>6</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>7</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>8</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>9</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>10</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>11</Paper>
+							<Paper className={classes.paper}>
+								<Typography variant="body2" component="p">
+									Yashraj Chavda
+								</Typography>
+								<Typography variant="body2" component="p">
+									GJ18 BF 8249
+								</Typography>
+							</Paper>
 						</Grid>
 					</Grid>
 				</div>
