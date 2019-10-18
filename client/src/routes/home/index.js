@@ -1,12 +1,20 @@
+import { h, Component } from 'preact';
 import style from './style';
 import gql from 'graphql-tag';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
-import { h, Component } from 'preact';
-import Card from 'preact-material-components/Card';
-import LayoutGrid from 'preact-material-components/LayoutGrid';
-import 'preact-material-components/LayoutGrid/style.css';
-import 'preact-material-components/Card/style.css';
-import 'preact-material-components/Button/style.css';
+const useStyles = makeStyles(theme => ({
+	root: {
+		flexGrow: 1,
+	},
+	paper: {
+		padding: theme.spacing(2),
+		textAlign: 'center',
+		color: theme.palette.text.secondary,
+	},
+}));
 
 import { useQuery } from '@apollo/react-hooks';
 
@@ -34,6 +42,8 @@ const GET_PARKING_SPOTS = gql`
 const Home = () => {
 	const { loading, data } = useQuery(GET_PARKING_SPOTS);
 
+	const classes = useStyles();
+
 	if(data) {
 		console.log('data is', data);
 	}
@@ -43,44 +53,48 @@ const Home = () => {
 			(<div class={style.home}>
 				<h1>Loaded</h1>
 				<p>This is the Home component.</p>
-				<div>
-					<LayoutGrid>
-						<LayoutGrid.Inner>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								1
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								2
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								3
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								4
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								5
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								6
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								7
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								8
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								9
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								10
-							</LayoutGrid.Cell>
-							<LayoutGrid.Cell cols="3" phoneCols="1">
-								11
-							</LayoutGrid.Cell>
-						</LayoutGrid.Inner>
-					</LayoutGrid>
+				<div className={classes.root}>
+					<Grid 
+						container
+						direction="row"
+						justify="flex-start"
+						alignItems="stretch"
+					 	spacing={1}
+					 >
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>1</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>2</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>3</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>4</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>5</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>6</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>7</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>8</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>9</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>10</Paper>
+						</Grid>
+						<Grid item xs={3} sm={3}>
+							<Paper className={classes.paper}>11</Paper>
+						</Grid>
+					</Grid>
 				</div>
 			</div>)
 		
