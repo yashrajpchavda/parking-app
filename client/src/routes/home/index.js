@@ -93,7 +93,7 @@ const Home = () => {
 						</Grid>
 						<Grid item xs={3} sm={3}>
 							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
+								<Typography noWrap variant="body2" component="p">
 									Kunal Chandegaonkar
 								</Typography>
 								<Typography variant="body2" component="p">
