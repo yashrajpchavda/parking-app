@@ -14,11 +14,11 @@ Please install node modules by doing `npm i` in `packing-app` and `parking-app/c
 
 Please install it by following the commands available at
 
-    [https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
+[https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
 
 Download and install Studio 3T to view the database locally
 
-    [https://studio3t.com/download-now/](https://studio3t.com/download-now/)
+[https://studio3t.com/download-now/](https://studio3t.com/download-now/)
 
 #### To start a server for backend (graphql)
 
