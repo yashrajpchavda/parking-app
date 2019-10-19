@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,9 +45,28 @@ const GET_ALL_USERS = gql`
     }
 `;
 
+const OCCUPY_PARKING_SPOT = gql`
+    mutation OccupyParkingSpot($toggleInput: ToggleParkingSpotInput!){
+        occupyParkingSpot(toggleInput: $toggleInput) {
+            id
+            number
+            isOccupied
+            occupiedAt
+            user {
+            displayName
+            username
+            }
+            car {
+            plate
+            name
+            }
+        }
+    }
+`;
+
 const OccupyDialogContent = ({ onDialogClose, slotData }) => {
     const {
-        id,
+        id: slotId,
         number,
         user,
         car,
@@ -58,6 +77,7 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
     const [values, setValues] = useState({});
 
     const { loading: usersLoading, data: usersData } = useQuery(GET_ALL_USERS);
+    const [occupyParkingSpot, { data: mutationData }] = useMutation(OCCUPY_PARKING_SPOT);
 
     if(usersData) {
         console.log('userdata', usersData);
@@ -89,7 +109,18 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
     }, [values, usersData]);
 
     const handleOccupyClick = useCallback((e) => {
-        console.log('values', values);
+        const { userId, carId } = values;
+
+        occupyParkingSpot({ variables: {
+            toggleInput: {
+                spotId: slotId,
+                userId,
+                carId
+            }
+        }}).then(() => {
+            console.log('occupied successfully');
+            onDialogClose();
+        })
     })
 
     return (

@@ -60,8 +60,25 @@ module.exports.validateOccupyParkingSpotInput = ({ spotId, carId, userId }) => {
         errors.parkingSpot = 'Parking spot id must be provided';
     }
 
-    if ((carId && !userId) || (userId && !carId)) {
-        errors.carOrUser = 'Both car and user ids must be provided';
+    if (!carId) {
+        errors.car = 'Car id must be provided';
+    }
+
+    if (!userId) {
+        errors.user = 'User id must be provided';
+    }
+
+    return {
+        errors,
+        valid: Object.keys(errors).length < 1
+    };
+};
+
+module.exports.validateReleaseParkingSpotInput = ({ spotId }) => {
+    const errors = {};
+
+    if (!spotId) {
+        errors.parkingSpot = 'Parking spot id must be provided';
     }
 
     return {

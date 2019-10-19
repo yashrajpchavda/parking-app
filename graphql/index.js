@@ -7,6 +7,7 @@ const {
     validateAddUserInput,
     validateLoginInput,
     validateOccupyParkingSpotInput,
+    validateReleaseParkingSpotInput,
     validateCreateCarInput,
     validateAssignCarInput
 } = require('./../util/validators');
@@ -97,7 +98,8 @@ const typeDefs = gql`
         createParkingSpot(parkingSpot: ParkingSpotInput!): ParkingSpot!
         addUser(addUserInput: AddUserInput): User!
         login(username: String!, password: String!): User!
-        toggleParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
+        occupyParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
+        releaseParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
         createCar(carInput: CarInput!): Car!
         assignCarToUser(assignCar: AssignCarInput!): User!
         unAssignCarFromUser(unAssignCar: AssignCarInput): User!
@@ -231,7 +233,7 @@ const resolvers = {
             };
         },
 
-        toggleParkingSpot: async (_, { toggleInput }) => {
+        occupyParkingSpot: async (_, { toggleInput }) => {
             // checkAuth(context);
 
             const { spotId, carId, userId } = toggleInput;
@@ -249,14 +251,42 @@ const resolvers = {
                 if (parkingSpot) {
                     parkingSpot.user = userId;
                     parkingSpot.car = carId;
+                    parkingSpot.isOccupied = true;
+                    parkingSpot.occupiedAt = new Date();
+                } else {
+                    throw new Error('Parking spot not found');
+                }
 
-                    if (userId && carId) {
-                        parkingSpot.isOccupied = true;
-                        parkingSpot.occupiedAt = new Date();
-                    } else {
-                        parkingSpot.isOccupied = false;
-                        parkingSpot.occupiedAt = null;
-                    }
+                await parkingSpot.save();
+
+                return ParkingSpot.findById(spotId)
+                    .populate('user')
+                    .populate('car');
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
+
+        releaseParkingSpot: async (_, { toggleInput }) => {
+            // checkAuth(context);
+
+            const { spotId } = toggleInput;
+            const { valid, errors } = validateReleaseParkingSpotInput(
+                toggleInput
+            );
+
+            if (!valid) {
+                throw new UserInputError('Wrong user input', { errors });
+            }
+
+            try {
+                const parkingSpot = await ParkingSpot.findById(spotId);
+
+                if (parkingSpot) {
+                    parkingSpot.user = null;
+                    parkingSpot.car = null;
+                    parkingSpot.isOccupied = false;
+                    parkingSpot.occupiedAt = null;
                 } else {
                     throw new Error('Parking spot not found');
                 }
