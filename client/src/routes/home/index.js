@@ -39,16 +39,29 @@ const GET_PARKING_SPOTS = gql`
 
 const Home = () => {
 	const { loading, data } = useQuery(GET_PARKING_SPOTS);
-	const [openDialog, setOpenDialog] = useState(false); 
+	const [dialogData, setDialogData] = useState({
+		open: false
+	}); 
 
 	const classes = useStyles();
 
-	const handleCardClick = useCallback(({ id, number, user, car }) => {
-		setOpenDialog(true);
+	const handleCardClick = useCallback(({ id, number, user, car, isOccupied }) => {
+		setDialogData({
+			open: true,
+			slotData: {
+				id,
+				number,
+				user,
+				car,
+				isOccupied
+			}
+		});
 	});
 
 	const onDialogClose = () => {
-		setOpenDialog(false);
+		setDialogData({
+			open: false
+		});
 	}
 
 	let parkingSpots = [];
@@ -86,8 +99,9 @@ const Home = () => {
 						 })}
 					</Grid>
 					<SlotOccupyDialog
-						openDialog={openDialog}
+						openDialog={dialogData.open}
 						onDialogClose={onDialogClose} 
+						slotData={dialogData.slotData}
 					/>
 				</div>
 			</div>)

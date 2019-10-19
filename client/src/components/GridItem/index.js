@@ -30,8 +30,7 @@ const useStyles = makeStyles(theme => ({
 const GridItem = ({ number, id, isOccupied, user, car, onCardClick }) => {
     const classes = useStyles();
     const handleGridItemClick = useCallback((event) => {
-        console.log('clicked', id, isOccupied);
-        onCardClick({ id, number, user, car });
+        onCardClick({ id, number, user, car, isOccupied });
     }, [isOccupied, id]);
 
     let details;
