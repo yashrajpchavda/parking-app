@@ -14,8 +14,18 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(2),
 		textAlign: 'center',
 		color: theme.palette.text.secondary,
-		minHeight: 120
+		height: 140
 	},
+	card: {
+		maxHeight: 150,
+		cursor: 'pointer',
+		position: 'relative'
+	},
+	slotNumber: {
+		position: 'absolute',
+		left: 10,
+		top: 5
+	}
 }));
 
 import { useQuery } from '@apollo/react-hooks';
@@ -33,21 +43,61 @@ const GET_PARKING_SPOTS = gql`
 			}
 			user {
 				id
-				username
 				displayName
-				email
 			}
 		}
 	}
 `;
+
+const GridItem = ({ number, id, isOccupied, user, car }) => {
+	const classes = useStyles();
+
+	let details;
+
+	if (isOccupied) {
+		details = (
+			<>
+				<Typography variant="body2" component="p">
+					{user.displayName}
+				</Typography>
+				<Typography variant="body2" component="p">
+					{car.plate}
+				</Typography>
+			</>
+		);
+	} else {
+		details = (
+			<Typography variant="body1" component="p">
+				Empty
+			</Typography>
+		);
+	}
+
+	const handleGridItemClick = (event) => {
+		console.log('clicked', id, isOccupied);
+	}
+
+	return (
+		<Grid className={classes.card} item xs={3} sm={3} onClick={handleGridItemClick}>
+			<Paper className={classes.paper}>
+				<Typography className={classes.slotNumber} variant="caption">
+					{number}
+				</Typography>
+				{details}
+			</Paper>
+		</Grid>
+	);
+}
 
 const Home = () => {
 	const { loading, data } = useQuery(GET_PARKING_SPOTS);
 
 	const classes = useStyles();
 
+	let parkingSpots = [];
+
 	if(data) {
-		console.log('data is', data);
+		parkingSpots = data.getParkingSpots;
 	}
 	return (
 		loading ? 
@@ -64,113 +114,18 @@ const Home = () => {
 						spacing={1}
 						className={classes.height} 
 					 >
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body1" component="p">
-									Empty
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Sandesh Almaeida
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography noWrap variant="body2" component="p">
-									Kunal Chandegaonkar
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={3} sm={3}>
-							<Paper className={classes.paper}>
-								<Typography variant="body2" component="p">
-									Yashraj Chavda
-								</Typography>
-								<Typography variant="body2" component="p">
-									GJ18 BF 8249
-								</Typography>
-							</Paper>
-						</Grid>
+						 {parkingSpots.map(({ number, isOccupied, id, user, car }, index) => {
+							 return (
+								 <GridItem
+									number={number}
+									isOccupied={isOccupied}
+									id={id}
+									user={user}
+									car={car}
+									key={number}
+								 />
+							 )
+						 })}
 					</Grid>
 				</div>
 			</div>)
