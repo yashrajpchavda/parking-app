@@ -1,34 +1,20 @@
 import { h, Component } from 'preact';
-import style from './style';
+import { useState, useCallback } from 'preact/hooks';
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+
+import style from './style';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid'; 
+import GridItem from '../../components/GridItem';
+
+import SlotOccupyDialog from '../../components/SlotOccupyDialog';
 
 const useStyles = makeStyles(theme => ({
 	root: {
 		flexGrow: 1
-	},
-	paper: {
-		padding: theme.spacing(2),
-		textAlign: 'center',
-		color: theme.palette.text.secondary,
-		height: 140
-	},
-	card: {
-		maxHeight: 150,
-		cursor: 'pointer',
-		position: 'relative'
-	},
-	slotNumber: {
-		position: 'absolute',
-		left: 10,
-		top: 5
 	}
 }));
-
-import { useQuery } from '@apollo/react-hooks';
 
 const GET_PARKING_SPOTS = gql`
 	query GetParkingSpots {
@@ -49,50 +35,21 @@ const GET_PARKING_SPOTS = gql`
 	}
 `;
 
-const GridItem = ({ number, id, isOccupied, user, car }) => {
-	const classes = useStyles();
 
-	let details;
-
-	if (isOccupied) {
-		details = (
-			<>
-				<Typography variant="body2" component="p">
-					{user.displayName}
-				</Typography>
-				<Typography variant="body2" component="p">
-					{car.plate}
-				</Typography>
-			</>
-		);
-	} else {
-		details = (
-			<Typography variant="body1" component="p">
-				Empty
-			</Typography>
-		);
-	}
-
-	const handleGridItemClick = (event) => {
-		console.log('clicked', id, isOccupied);
-	}
-
-	return (
-		<Grid className={classes.card} item xs={3} sm={3} onClick={handleGridItemClick}>
-			<Paper className={classes.paper}>
-				<Typography className={classes.slotNumber} variant="caption">
-					{number}
-				</Typography>
-				{details}
-			</Paper>
-		</Grid>
-	);
-}
 
 const Home = () => {
 	const { loading, data } = useQuery(GET_PARKING_SPOTS);
+	const [openDialog, setOpenDialog] = useState(false); 
 
 	const classes = useStyles();
+
+	const handleCardClick = useCallback(({ id, number, user, car }) => {
+		setOpenDialog(true);
+	});
+
+	const onDialogClose = () => {
+		setOpenDialog(false);
+	}
 
 	let parkingSpots = [];
 
@@ -122,11 +79,16 @@ const Home = () => {
 									id={id}
 									user={user}
 									car={car}
+									onCardClick={handleCardClick}
 									key={number}
 								 />
 							 )
 						 })}
 					</Grid>
+					<SlotOccupyDialog
+						openDialog={openDialog}
+						onDialogClose={onDialogClose} 
+					/>
 				</div>
 			</div>)
 		
