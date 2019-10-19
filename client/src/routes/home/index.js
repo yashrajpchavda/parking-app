@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 
 import style from './style';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid'; 
+import Grid from '@material-ui/core/Grid';
 import GridItem from '../../components/GridItem';
 
 import SlotOccupyDialog from '../../components/SlotOccupyDialog';
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 
 const GET_PARKING_SPOTS = gql`
 	query GetParkingSpots {
-		getParkingSpots{
+		getParkingSpots {
 			id
 			isOccupied
 			number
@@ -41,7 +41,7 @@ const Home = () => {
 	const { loading, data } = useQuery(GET_PARKING_SPOTS);
 	const [dialogData, setDialogData] = useState({
 		open: false
-	}); 
+	});
 
 	const classes = useStyles();
 
@@ -66,27 +66,27 @@ const Home = () => {
 
 	let parkingSpots = [];
 
-	if(data) {
+	if (data) {
 		parkingSpots = data.getParkingSpots;
 	}
 	return (
-		loading ? 
+		loading ?
 			<h1>Loading...</h1> :
 			(<div class={style.home}>
 				<h1>Loaded</h1>
 				<p>This is the Home component.</p>
 				<div className={classes.root}>
-					<Grid 
+					<Grid
 						container
 						direction="row"
 						justify="flex-start"
 						alignItems="stretch"
 						spacing={1}
-						className={classes.height} 
-					 >
-						 {parkingSpots.map(({ number, isOccupied, id, user, car }, index) => {
-							 return (
-								 <GridItem
+						className={classes.height}
+					>
+						{parkingSpots.map(({ number, isOccupied, id, user, car }, index) => {
+							return (
+								<GridItem
 									number={number}
 									isOccupied={isOccupied}
 									id={id}
@@ -94,18 +94,18 @@ const Home = () => {
 									car={car}
 									onCardClick={handleCardClick}
 									key={number}
-								 />
-							 )
-						 })}
+								/>
+							)
+						})}
 					</Grid>
 					<SlotOccupyDialog
 						openDialog={dialogData.open}
-						onDialogClose={onDialogClose} 
+						onDialogClose={onDialogClose}
 						slotData={dialogData.slotData}
 					/>
 				</div>
 			</div>)
-		
+
 	)
 };
 

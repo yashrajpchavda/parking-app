@@ -112,7 +112,8 @@ const resolvers = {
                 .populate('car');
             return spots;
         },
-        getAllUsers: () => User.find().populate('cars'),
+        getAllUsers: () =>
+            User.find({ isAdmin: { $ne: true } }).populate('cars'),
         getAllCars: () => Car.find()
     },
 
