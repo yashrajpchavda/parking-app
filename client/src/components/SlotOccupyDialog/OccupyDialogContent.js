@@ -53,12 +53,14 @@ const OCCUPY_PARKING_SPOT = gql`
             isOccupied
             occupiedAt
             user {
-            displayName
-            username
+                id
+                displayName
+                username
             }
             car {
-            plate
-            name
+                id
+                plate
+                name
             }
         }
     }
@@ -66,7 +68,7 @@ const OCCUPY_PARKING_SPOT = gql`
 
 const OccupyDialogContent = ({ onDialogClose, slotData }) => {
     const {
-        id: slotId,
+        id: spotId,
         number,
         user,
         car,
@@ -75,13 +77,10 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
 
     const [cars, setCars] = useState([]);
     const [values, setValues] = useState({});
+    const [errors, setErrors] = useState({});
 
     const { loading: usersLoading, data: usersData } = useQuery(GET_ALL_USERS);
-    const [occupyParkingSpot, { data: mutationData }] = useMutation(OCCUPY_PARKING_SPOT);
-
-    if(usersData) {
-        console.log('userdata', usersData);
-    }
+    const [occupyParkingSpot, { data: occupyMutationData }] = useMutation(OCCUPY_PARKING_SPOT);
 
     const classes = useStyles();
 
@@ -113,13 +112,20 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
 
         occupyParkingSpot({ variables: {
             toggleInput: {
-                spotId: slotId,
+                spotId,
                 userId,
                 carId
             }
         }}).then(() => {
             console.log('occupied successfully');
             onDialogClose();
+        }).catch(err => {
+            const currentErrors = err.graphQLErrors[0].extensions.exception.errors;
+            setErrors({
+                ...currentErrors
+            });
+            console.log('err', err);
+            console.log('mutation data', occupyMutationData);
         })
     })
 
@@ -131,10 +137,10 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                     <DialogTitle id="form-dialog-title">Occupy Slot</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Please select the user and car to occupy the parking slot #{number}.
+                            Please select the user and car to occupy the parking slot <strong>#{number}</strong>.
                         </DialogContentText>
                         <form className={classes.root} autoComplete="off">
-                            <FormControl className={classes.formControl}>
+                            <FormControl className={classes.formControl} error={errors.user ? true : false}>
                                 <InputLabel htmlFor="user-native-simple">User</InputLabel>
                                 <Select
                                     native
@@ -150,8 +156,9 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                                         return <option key={id} value={id}>{displayName}</option>
                                     })}
                                 </Select>
+                                <FormHelperText>{errors.user}</FormHelperText>
                             </FormControl>
-                            <FormControl className={classes.formControl}>
+                            <FormControl className={classes.formControl} error={errors.car ? true : false}>
                                 <InputLabel htmlFor="car-native-simple">Car</InputLabel>
                                 <Select
                                     native
@@ -167,6 +174,7 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                                         return <option key={id} value={id}>{name} - {plate}</option>
                                     })}
                                 </Select>
+                                <FormHelperText>{errors.car}</FormHelperText>
                             </FormControl>
                         </form>
                     </DialogContent>
@@ -174,7 +182,7 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                         <Button onClick={handleOccupyClick} color="primary">
                             Occupy
                         </Button>
-                        <Button onClick={onDialogClose} color="secondary">
+                        <Button onClick={onDialogClose}>
                             Cancel
                         </Button>
                     </DialogActions>

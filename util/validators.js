@@ -57,15 +57,15 @@ module.exports.validateOccupyParkingSpotInput = ({ spotId, carId, userId }) => {
     const errors = {};
 
     if (!spotId) {
-        errors.parkingSpot = 'Parking spot id must be provided';
+        errors.parkingSpot = 'Parking spot must be provided';
     }
 
     if (!carId) {
-        errors.car = 'Car id must be provided';
+        errors.car = 'Car must be provided';
     }
 
     if (!userId) {
-        errors.user = 'User id must be provided';
+        errors.user = 'User must be provided';
     }
 
     return {
