@@ -4,6 +4,7 @@ import { Router } from 'preact-router';
 import Header from './header';
 
 // Code-splitting is automated for routes
+import Login from '../routes/login';
 import Home from '../routes/home';
 import Profile from '../routes/profile';
 
@@ -25,6 +26,7 @@ const App = () => {
 			<Header />
 			<Router onChange={handleRoute}>
 				<Home path="/" />
+				<Login path="/login" />
 				<Profile path="/profile/" user="me" />
 				<Profile path="/profile/:user" />
 			</Router>
