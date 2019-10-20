@@ -32,7 +32,6 @@ const GET_ALL_USERS = gql`
     query GetAllUsers {
         getAllUsers {
             id
-            username
             displayName
             email
             isAdmin
@@ -55,7 +54,6 @@ const OCCUPY_PARKING_SPOT = gql`
             user {
                 id
                 displayName
-                username
             }
             car {
                 id

@@ -1,15 +1,10 @@
 module.exports.validateAddUserInput = (
-    username,
     displayName,
     email,
     password,
     confirmPassword
 ) => {
     const errors = {};
-
-    if (username.trim() === '') {
-        errors.username = 'Username must not be empty';
-    }
 
     if (displayName.trim() === '') {
         errors.displayName = 'Display name must not be empty';
@@ -36,11 +31,11 @@ module.exports.validateAddUserInput = (
     };
 };
 
-module.exports.validateLoginInput = (username, password) => {
+module.exports.validateLoginInput = (email, password) => {
     const errors = {};
 
-    if (username.trim() === '') {
-        errors.username = 'Username must not be empty';
+    if (email.trim() === '') {
+        errors.email = 'Email must not be empty';
     }
 
     if (password === '') {

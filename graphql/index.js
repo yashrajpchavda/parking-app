@@ -22,11 +22,10 @@ function generateToken(user) {
         {
             id: user.id,
             email: user.email,
-            username: user.username,
             isAdmin: user.isAdmin
         },
         process.env.SECRET_KEY || 'very secret key',
-        { expiresIn: '1h' }
+        { expiresIn: '5m' }
     );
 }
 
@@ -44,7 +43,6 @@ const typeDefs = gql`
 
     type User {
         id: ID!
-        username: String!
         displayName: String!
         email: String!
         cars: [Car]
@@ -64,11 +62,10 @@ const typeDefs = gql`
     }
 
     input AddUserInput {
-        username: String!
+        email: String!
         displayName: String!
         password: String!
         confirmPassword: String!
-        email: String!
         cars: [String]
     }
 
@@ -97,7 +94,7 @@ const typeDefs = gql`
     type Mutation {
         createParkingSpot(parkingSpot: ParkingSpotInput!): ParkingSpot!
         addUser(addUserInput: AddUserInput): User!
-        login(username: String!, password: String!): User!
+        login(email: String!, password: String!): User!
         occupyParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
         releaseParkingSpot(toggleInput: ToggleParkingSpotInput!): ParkingSpot!
         createCar(carInput: CarInput!): Car!
@@ -149,7 +146,6 @@ const resolvers = {
             _,
             {
                 addUserInput: {
-                    username,
                     displayName,
                     password,
                     confirmPassword,
@@ -160,7 +156,6 @@ const resolvers = {
         ) => {
             // checkAdminAuth(context);
             const { valid, errors } = validateAddUserInput(
-                username,
                 displayName,
                 email,
                 password,
@@ -174,12 +169,12 @@ const resolvers = {
                 throw new UserInputError('Errors', { errors });
             }
 
-            const existingUser = await User.findOne({ username });
+            const existingUser = await User.findOne({ email });
 
             if (existingUser) {
-                throw new UserInputError('Username is taken', {
+                throw new UserInputError('User with the email already exists', {
                     errors: {
-                        username: 'This username is taken'
+                        email: 'The user with the email already exists'
                     }
                 });
             }
@@ -188,7 +183,6 @@ const resolvers = {
 
             const newUser = new User({
                 email,
-                username,
                 displayName,
                 password: hashedPassword,
                 isAdmin: false,
@@ -201,14 +195,14 @@ const resolvers = {
             return User.findById(newUser.id).populate('cars');
         },
 
-        login: async (_, { username, password }) => {
-            const { errors, valid } = validateLoginInput(username, password);
+        login: async (_, { email, password }) => {
+            const { errors, valid } = validateLoginInput(email, password);
 
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
             }
 
-            const user = await User.findOne({ username });
+            const user = await User.findOne({ email });
 
             if (!user) {
                 errors.general = 'User not found';

@@ -4,15 +4,18 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import style from './style';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import GridItem from '../../components/GridItem';
+import Typography from '@material-ui/core/Typography';
 
+import GridItem from '../../components/GridItem';
 import SlotOccupyDialog from '../../components/SlotOccupyDialog';
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		flexGrow: 1
+		flexGrow: 1,
+		marginTop: 16
 	}
 }));
 
@@ -73,8 +76,7 @@ const Home = () => {
 		loading ?
 			<h1>Loading...</h1> :
 			(<div class={style.home}>
-				<h1>Loaded</h1>
-				<p>This is the Home component.</p>
+				<Typography variant="h5">Choose / release a parking slot</Typography>
 				<div className={classes.root}>
 					<Grid
 						container
