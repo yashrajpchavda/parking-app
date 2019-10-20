@@ -117,17 +117,15 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                 carId
             }
         }}).then(() => {
-            console.log('occupied successfully');
+            setErrors({});
             onDialogClose();
         }).catch(err => {
             const currentErrors = err.graphQLErrors[0].extensions.exception.errors;
             setErrors({
                 ...currentErrors
             });
-            console.log('err', err);
-            console.log('mutation data', occupyMutationData);
         })
-    })
+    }, [values])
 
     return (
         <>
@@ -156,7 +154,6 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                                         return <option key={id} value={id}>{displayName}</option>
                                     })}
                                 </Select>
-                                <FormHelperText>{errors.user}</FormHelperText>
                             </FormControl>
                             <FormControl className={classes.formControl} error={errors.car ? true : false}>
                                 <InputLabel htmlFor="car-native-simple">Car</InputLabel>
@@ -174,7 +171,6 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
                                         return <option key={id} value={id}>{name} - {plate}</option>
                                     })}
                                 </Select>
-                                <FormHelperText>{errors.car}</FormHelperText>
                             </FormControl>
                         </form>
                     </DialogContent>

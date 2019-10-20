@@ -68,7 +68,7 @@ const ReleaseDialogContent = ({ onDialogClose, slotData }) => {
                 <Button onClick={handleYesClick} color="primary">
                     Yes
                 </Button>
-                <Button onClick={onDialogClose} color="secondary">
+                <Button onClick={onDialogClose}>
                     Cancel
                 </Button>
             </DialogActions>
