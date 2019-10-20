@@ -1,4 +1,5 @@
 import { Component } from 'preact';
+import { useState, useCallback } from 'preact/hooks';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,7 +14,7 @@ import style from './style';
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        marginTop: theme.spacing(16),
+        marginTop: theme.spacing(12),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -33,6 +34,41 @@ const useStyles = makeStyles(theme => ({
 
 const Login = () => {
     const classes = useStyles();
+    const [formValues, setFormValues] = useState({
+        email: '',
+        password: ''
+    });
+
+    const [errors, setErrors] = useState({});
+
+    const handleOnFormFieldChange = (event) => {
+        setFormValues({
+            ...formValues,
+            [event.target.name]: event.target.value
+        });
+    };
+
+    const handleLoginSubmit = (event) => {
+        event.preventDefault();
+
+        const errors = {};
+        
+        if(!formValues.email || formValues.email.trim() === '') {
+            errors.email = true;
+        }
+
+        if (!formValues.password || formValues.password.trim() === '') {
+            errors.password = true;
+        }
+
+        setErrors(errors);
+
+        if(Object.keys(errors).length === 0) {
+            console.log('values are', formValues);
+        }
+
+    };
+
     return (
         <div className={style['login-container']}>
             <Container component="main" maxWidth="xs">
@@ -44,7 +80,7 @@ const Login = () => {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    <form className={classes.form} noValidate onSubmit={handleLoginSubmit}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -54,7 +90,10 @@ const Login = () => {
                             label="Email Address"
                             name="email"
                             autoComplete="email"
+                            value={formValues.email}
+                            onChange={handleOnFormFieldChange}
                             autoFocus
+                            error={errors.email}
                         />
                         <TextField
                             variant="outlined"
@@ -66,6 +105,9 @@ const Login = () => {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={handleOnFormFieldChange}
+                            value={formValues.password}
+                            error={errors.password}
                         />
                         <Button
                             type="submit"
