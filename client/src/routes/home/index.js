@@ -41,8 +41,6 @@ const GET_PARKING_SPOTS = gql`
 	}
 `;
 
-
-
 const Home = () => {
 	const { user } = useContext(AuthContext);
 

@@ -97,7 +97,8 @@ const OccupyDialogContent = ({ onDialogClose, spotData }) => {
 
         setValues({
             ...values,
-            userId: selectedUserId
+            userId: selectedUserId,
+            carId: selectedUser.cars[0].id
         });
 
         if (selectedUser) {
@@ -164,7 +165,6 @@ const OccupyDialogContent = ({ onDialogClose, spotData }) => {
                                         id: 'car-native-simple',
                                     }}
                                 >
-                                    <option value="" />
                                     {cars.map(({ id, name, plate }) => {
                                         return <option key={id} value={id}>{name} - {plate}</option>
                                     })}
