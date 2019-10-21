@@ -1,7 +1,10 @@
-import { h, Component } from 'preact';
-import { useState, useCallback } from 'preact/hooks';
+import { Component } from 'preact';
+import { useState, useCallback, useContext } from 'preact/hooks';
+import { route } from 'preact-router';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+
+import { AuthContext } from './../../context/auth';
 
 import style from './style';
 
@@ -41,6 +44,13 @@ const GET_PARKING_SPOTS = gql`
 
 
 const Home = () => {
+	const { user } = useContext(AuthContext);
+
+	// route to login if user does not exist
+	if (!user) {
+		route('/login');
+	}
+
 	const { loading, data } = useQuery(GET_PARKING_SPOTS);
 	const [dialogData, setDialogData] = useState({
 		open: false

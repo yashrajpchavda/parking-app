@@ -22,7 +22,8 @@ function generateToken(user) {
         {
             id: user.id,
             email: user.email,
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            displayName: user.displayName
         },
         process.env.SECRET_KEY || 'very secret key',
         { expiresIn: '5m' }

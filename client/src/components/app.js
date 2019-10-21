@@ -1,12 +1,13 @@
 import { h, Component } from 'preact';
-import { Router } from 'preact-router';
+import { Router, Route } from 'preact-router';
 
+import AuthRoute from './../util/AuthRoute';
 import Header from './header';
 
 // Code-splitting is automated for routes
 import Login from '../routes/login';
 import Home from '../routes/home';
-import Profile from '../routes/profile';
+
 
 const App = () => {
 
@@ -25,10 +26,8 @@ const App = () => {
 		<div id="app">
 			<Header />
 			<Router onChange={handleRoute}>
-				<Home path="/" />
-				<Login path="/login" />
-				<Profile path="/profile/" user="me" />
-				<Profile path="/profile/:user" />
+				<Route path="/" component={Home} />
+				<AuthRoute path="/login" component={Login} />
 			</Router>
 		</div>
 	);

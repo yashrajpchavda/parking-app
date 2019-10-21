@@ -39,6 +39,7 @@
     "clsx": "^1.0.4",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
+    "jwt-decode": "^2.2.0",
     "preact": "^10.0.0",
     "preact-render-to-string": "^5.0.6",
     "preact-router": "^3.0.1"

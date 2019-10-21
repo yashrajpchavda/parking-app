@@ -1,8 +1,10 @@
 import { Component } from 'preact';
-import { useState, useCallback } from 'preact/hooks';
+import { useState, useCallback, useContext } from 'preact/hooks';
 import { useMutation } from '@apollo/react-hooks';
 import { route } from 'preact-router';
 import gql from 'graphql-tag';
+
+import { AuthContext } from './../../context/auth';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -41,11 +43,13 @@ const LOGIN_USER = gql`
             id
             email
             token
+            displayName
         }
     }
 `;
 
 const Login = (props) => {
+    const context = useContext(AuthContext);
     const classes = useStyles();
     const [formValues, setFormValues] = useState({
         email: '',
@@ -66,15 +70,13 @@ const Login = (props) => {
     const handleLoginSubmit = (event) => {
         event.preventDefault();
 
-        console.log(props);
-
         loginUser({
             variables: {
                 email: formValues.email,
                 password: formValues.password
             }
-        }).then(res => {
-            console.log('res is', res);
+        }).then(({ data: { login: userData } }) => {
+            context.login(userData);
             route('/');
         }).catch(err => {
             const currentErrors = err.graphQLErrors[0].extensions.exception.errors;
