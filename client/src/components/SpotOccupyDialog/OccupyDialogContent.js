@@ -14,6 +14,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 
+import AppSnackbar from './../../lib/Snackbar';
+
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
@@ -124,63 +126,82 @@ const OccupyDialogContent = ({ onDialogClose, spotData }) => {
                 ...currentErrors
             });
         })
-    }, [values])
+    }, [values]);
+
+    const handleCloseSnackbar = useCallback(
+        () => {
+            setErrors({
+                ...errors,
+                operation: null
+            });
+        },
+        [errors]
+    )
 
     return (
         <>
             {usersLoading ?
-                <DialogTitle id="form-dialog-title">Loading...</DialogTitle> :
-                <>
-                    <DialogTitle id="form-dialog-title">Occupy Spot</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Please select the user and car to occupy the parking spot <strong>#{number}</strong>.
+                (
+                    <DialogTitle id="form-dialog-title">Loading...</DialogTitle>
+                ) : (
+                    <>
+                        <DialogTitle id="form-dialog-title">Occupy Spot</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Please select the user and car to occupy the parking spot <strong>#{number}</strong>.
                         </DialogContentText>
-                        <form className={classes.root} autoComplete="off">
-                            <FormControl className={classes.formControl} error={errors.user ? true : false}>
-                                <InputLabel htmlFor="user-native-simple">User</InputLabel>
-                                <Select
-                                    native
-                                    value={values.userId}
-                                    onChange={handleChangeUser}
-                                    inputProps={{
-                                        name: 'user',
-                                        id: 'user-native-simple',
-                                    }}
-                                >
-                                    <option value="" />
-                                    {usersData.getAllUsers.map(({ displayName, id }) => {
-                                        return <option key={id} value={id}>{displayName}</option>
-                                    })}
-                                </Select>
-                            </FormControl>
-                            <FormControl className={classes.formControl} error={errors.car ? true : false}>
-                                <InputLabel htmlFor="car-native-simple">Car</InputLabel>
-                                <Select
-                                    native
-                                    value={values.carId}
-                                    onChange={handleChangeCar}
-                                    inputProps={{
-                                        name: 'car',
-                                        id: 'car-native-simple',
-                                    }}
-                                >
-                                    {cars.map(({ id, name, plate }) => {
-                                        return <option key={id} value={id}>{name} - {plate}</option>
-                                    })}
-                                </Select>
-                            </FormControl>
-                        </form>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleOccupyClick} color="primary">
-                            Occupy
+                            <form className={classes.root} autoComplete="off">
+                                <FormControl className={classes.formControl} error={errors.user ? true : false}>
+                                    <InputLabel htmlFor="user-native-simple">User</InputLabel>
+                                    <Select
+                                        native
+                                        value={values.userId}
+                                        onChange={handleChangeUser}
+                                        inputProps={{
+                                            name: 'user',
+                                            id: 'user-native-simple',
+                                        }}
+                                    >
+                                        <option value="" />
+                                        {usersData.getAllUsers.map(({ displayName, id }) => {
+                                            return <option key={id} value={id}>{displayName}</option>
+                                        })}
+                                    </Select>
+                                </FormControl>
+                                <FormControl className={classes.formControl} error={errors.car ? true : false}>
+                                    <InputLabel htmlFor="car-native-simple">Car</InputLabel>
+                                    <Select
+                                        native
+                                        value={values.carId}
+                                        onChange={handleChangeCar}
+                                        inputProps={{
+                                            name: 'car',
+                                            id: 'car-native-simple',
+                                        }}
+                                    >
+                                        {cars.map(({ id, name, plate }) => {
+                                            return <option key={id} value={id}>{name} - {plate}</option>
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            </form>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleOccupyClick} color="primary">
+                                Occupy
                         </Button>
-                        <Button onClick={onDialogClose}>
-                            Cancel
+                            <Button onClick={onDialogClose}>
+                                Cancel
                         </Button>
-                    </DialogActions>
-                </>
+                        </DialogActions>
+                        <AppSnackbar
+                            open={!!errors.operation}
+                            message={errors.operation}
+                            variant="error"
+                            onClose={handleCloseSnackbar}
+                        />
+                    </>
+                )  
             }
         </>
     );

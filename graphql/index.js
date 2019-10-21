@@ -242,19 +242,40 @@ const resolvers = {
             }
 
             try {
-                const parkingSpot = await ParkingSpot.findById(spotId);
+                // check if the same car is already parked at some other spot
+                const spotOfCar = await ParkingSpot.findOne({ car: carId });
 
-                if (parkingSpot.unUsable) {
-                    throw new Error('Parking spot is not usable');
+                if (spotOfCar) {
+                    throw new UserInputError(
+                        'Car is already parked at another spot',
+                        {
+                            errors: {
+                                operation:
+                                    'Car is already parked at another spot'
+                            }
+                        }
+                    );
                 }
 
+                const parkingSpot = await ParkingSpot.findById(spotId);
+
                 if (parkingSpot) {
+                    if (parkingSpot.isOccupied) {
+                        throw new UserInputError(
+                            'Parking spot is already occupied'
+                        );
+                    }
+
+                    if (parkingSpot.unUsable) {
+                        throw new UserInputError('Parking spot is not usable');
+                    }
+
                     parkingSpot.user = userId;
                     parkingSpot.car = carId;
                     parkingSpot.isOccupied = true;
                     parkingSpot.occupiedAt = new Date();
                 } else {
-                    throw new Error('Parking spot not found');
+                    throw new UserInputError('Parking spot not found');
                 }
 
                 await parkingSpot.save();
@@ -263,7 +284,11 @@ const resolvers = {
                     .populate('user')
                     .populate('car');
             } catch (err) {
-                throw new Error(err);
+                if (err instanceof UserInputError) {
+                    throw new UserInputError(err, { errors: err.errors });
+                } else {
+                    throw new Error(err);
+                }
             }
         },
 
@@ -282,11 +307,11 @@ const resolvers = {
             try {
                 const parkingSpot = await ParkingSpot.findById(spotId);
 
-                if (parkingSpot.unUsable) {
-                    throw new Error('Parking spot is not usable');
-                }
-
                 if (parkingSpot) {
+                    if (parkingSpot.unUsable) {
+                        throw new Error('Parking spot is not usable');
+                    }
+
                     parkingSpot.user = null;
                     parkingSpot.car = null;
                     parkingSpot.isOccupied = false;

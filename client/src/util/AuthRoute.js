@@ -2,7 +2,7 @@ import { Component } from 'preact';
 import { useContext } from 'preact/hooks';
 import { Route } from 'preact-router';
 
-import Redirect from '../components/router/Redirect';
+import Redirect from './../lib/router/Redirect';
 import { AuthContext } from './../context/auth';
 
 function AuthRoute({ component: Comp, ...rest }) {
