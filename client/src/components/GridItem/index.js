@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     occupied: {
         backgroundColor: blueGrey['50']
     },
-    mySlot: {
+    mySpot: {
         backgroundColor: blue['200']
     },
     card: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
         cursor: 'pointer',
         position: 'relative'
     },
-    slotNumber: {
+    spotNumber: {
         position: 'absolute',
         left: 10,
         top: 5
@@ -66,7 +66,7 @@ const GridItem = ({ number, id, isOccupied, user, car, onCardClick }) => {
     return (
         <Grid className={classes.card} item xs={3} sm={3} onClick={handleGridItemClick}>
             <Paper className={clsx(classes.paper, isOccupied && classes.occupied)}>
-                <Typography className={classes.slotNumber} variant="caption">
+                <Typography className={classes.spotNumber} variant="caption">
                     {number}
                 </Typography>
                 {details}

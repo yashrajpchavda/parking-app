@@ -64,14 +64,14 @@ const OCCUPY_PARKING_SPOT = gql`
     }
 `;
 
-const OccupyDialogContent = ({ onDialogClose, slotData }) => {
+const OccupyDialogContent = ({ onDialogClose, spotData }) => {
     const {
         id: spotId,
         number,
         user,
         car,
         isOccupied
-    } = slotData;
+    } = spotData;
 
     const [cars, setCars] = useState([]);
     const [values, setValues] = useState({});
@@ -130,10 +130,10 @@ const OccupyDialogContent = ({ onDialogClose, slotData }) => {
             {usersLoading ?
                 <DialogTitle id="form-dialog-title">Loading...</DialogTitle> :
                 <>
-                    <DialogTitle id="form-dialog-title">Occupy Slot</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Occupy Spot</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Please select the user and car to occupy the parking slot <strong>#{number}</strong>.
+                            Please select the user and car to occupy the parking spot <strong>#{number}</strong>.
                         </DialogContentText>
                         <form className={classes.root} autoComplete="off">
                             <FormControl className={classes.formControl} error={errors.user ? true : false}>

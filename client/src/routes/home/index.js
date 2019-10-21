@@ -13,7 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import GridItem from '../../components/GridItem';
-import SlotOccupyDialog from '../../components/SlotOccupyDialog';
+import SpotOccupyDialog from '../../components/SpotOccupyDialog';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -61,7 +61,7 @@ const Home = () => {
 	const handleCardClick = useCallback(({ id, number, user, car, isOccupied }) => {
 		setDialogData({
 			open: true,
-			slotData: {
+			spotData: {
 				id,
 				number,
 				user,
@@ -86,7 +86,7 @@ const Home = () => {
 		loading ?
 			<h1>Loading...</h1> :
 			(<div class={style.home}>
-				<Typography variant="h5">Choose / release a parking slot</Typography>
+				<Typography variant="h5">Choose / release a parking spot</Typography>
 				<div className={classes.root}>
 					<Grid
 						container
@@ -110,10 +110,10 @@ const Home = () => {
 							)
 						})}
 					</Grid>
-					<SlotOccupyDialog
+					<SpotOccupyDialog
 						openDialog={dialogData.open}
 						onDialogClose={onDialogClose}
-						slotData={dialogData.slotData}
+						spotData={dialogData.spotData}
 					/>
 				</div>
 			</div>)

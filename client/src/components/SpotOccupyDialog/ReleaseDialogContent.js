@@ -35,11 +35,11 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const ReleaseDialogContent = ({ onDialogClose, slotData }) => {
+const ReleaseDialogContent = ({ onDialogClose, spotData }) => {
     const classes = useStyles();
     const [releaseParkingSpot, {data: releaseMutationData}] = useMutation(RELEASE_PARKING_SPOT);
 
-    const { id: spotId } = slotData;
+    const { id: spotId } = spotData;
 
     const handleYesClick = useCallback(() => {
         releaseParkingSpot({
@@ -56,10 +56,10 @@ const ReleaseDialogContent = ({ onDialogClose, slotData }) => {
 
     return (
         <>
-            <DialogTitle id="form-dialog-title">Release slot</DialogTitle>
+            <DialogTitle id="form-dialog-title">Release spot</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Would you like to release the occupied slot?
+                    Would you like to release the occupied spot?
                 </DialogContentText>
 
             </DialogContent>

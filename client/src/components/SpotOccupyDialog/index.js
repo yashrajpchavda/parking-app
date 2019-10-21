@@ -4,12 +4,12 @@ import Dialog from '@material-ui/core/Dialog';
 import ReleaseDialogContent from './ReleaseDialogContent';
 import OccupyDialogContent from './OccupyDialogContent';
 
-const SlotOccupyDialog = ({ openDialog, onDialogClose, slotData }) => {
+const SpotOccupyDialog = ({ openDialog, onDialogClose, spotData }) => {
     let DialogInnerContent;
 
-    if (slotData && slotData.isOccupied) {
+    if (spotData && spotData.isOccupied) {
         DialogInnerContent = ReleaseDialogContent;
-    } else if (slotData) {
+    } else if (spotData) {
         DialogInnerContent = OccupyDialogContent;
     } else {
         DialogInnerContent = null;
@@ -23,10 +23,10 @@ const SlotOccupyDialog = ({ openDialog, onDialogClose, slotData }) => {
         >
             <DialogInnerContent
                 onDialogClose={onDialogClose}
-                slotData={slotData}
+                spotData={spotData}
             />
         </Dialog>
     );
 };
 
-export default SlotOccupyDialog;
+export default SpotOccupyDialog;
