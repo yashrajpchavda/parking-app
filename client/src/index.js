@@ -1,6 +1,6 @@
 import { render } from 'preact';
 
 import './style';
-import ApolloProvider from './ApolloProvider';
+import Providers from './Providers';
 
-render(ApolloProvider, document.body);
+render(Providers, document.body);
