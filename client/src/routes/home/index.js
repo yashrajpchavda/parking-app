@@ -27,6 +27,7 @@ const GET_PARKING_SPOTS = gql`
 		getParkingSpots {
 			id
 			isOccupied
+			unUsable
 			number
 			car {
 				id
@@ -94,11 +95,12 @@ const Home = () => {
 						spacing={1}
 						className={classes.height}
 					>
-						{parkingSpots.map(({ number, isOccupied, id, user, car }, index) => {
+						{parkingSpots.map(({ number, isOccupied, id, user, car, unUsable }, index) => {
 							return (
 								<GridItem
 									number={number}
 									isOccupied={isOccupied}
+									unUsable={unUsable}
 									id={id}
 									user={user}
 									car={car}

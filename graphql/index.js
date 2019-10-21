@@ -33,8 +33,9 @@ function generateToken(user) {
 const typeDefs = gql`
     type ParkingSpot {
         id: ID!
-        number: Int!
+        number: Float!
         isOccupied: Boolean!
+        unUsable: Boolean
         createdAt: String!
         occupiedAt: String
         releasedAt: String
@@ -59,7 +60,8 @@ const typeDefs = gql`
     }
 
     input ParkingSpotInput {
-        number: Int!
+        number: Float!
+        unUsable: Boolean
     }
 
     input AddUserInput {
@@ -108,6 +110,7 @@ const resolvers = {
     Query: {
         getParkingSpots: async () => {
             const spots = await ParkingSpot.find()
+                .sort('number')
                 .populate('user')
                 .populate('car');
             return spots;
@@ -118,7 +121,10 @@ const resolvers = {
     },
 
     Mutation: {
-        createParkingSpot: async (_, { parkingSpot: { number } }) => {
+        createParkingSpot: async (
+            _,
+            { parkingSpot: { number, unUsable = false } }
+        ) => {
             // checkAdminAuth(context);
 
             try {
@@ -126,16 +132,11 @@ const resolvers = {
                     throw new UserInputError('Invalid parking spot number');
                 }
 
-                const existingSpot = await ParkingSpot.findOne({ number });
-
-                if (existingSpot) {
-                    throw new UserInputError('Parking spot already exists');
-                }
-
                 const spot = new ParkingSpot({
                     number,
                     createdAt: new Date(),
-                    isOccupied: false
+                    isOccupied: false,
+                    unUsable
                 });
 
                 return spot.save();
@@ -243,6 +244,10 @@ const resolvers = {
             try {
                 const parkingSpot = await ParkingSpot.findById(spotId);
 
+                if (parkingSpot.unUsable) {
+                    throw new Error('Parking spot is not usable');
+                }
+
                 if (parkingSpot) {
                     parkingSpot.user = userId;
                     parkingSpot.car = carId;
@@ -276,6 +281,10 @@ const resolvers = {
 
             try {
                 const parkingSpot = await ParkingSpot.findById(spotId);
+
+                if (parkingSpot.unUsable) {
+                    throw new Error('Parking spot is not usable');
+                }
 
                 if (parkingSpot) {
                     parkingSpot.user = null;

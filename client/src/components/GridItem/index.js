@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
     occupied: {
         backgroundColor: blueGrey['50']
     },
+    unUsable: {
+        backgroundColor: blueGrey['200']
+    },
     mySpot: {
         backgroundColor: blue['200']
     },
@@ -36,15 +39,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const GridItem = ({ number, id, isOccupied, user, car, onCardClick }) => {
+const GridItem = ({ number, id, isOccupied, unUsable, user, car, onCardClick }) => {
     const classes = useStyles();
     const handleGridItemClick = useCallback((event) => {
+        if(unUsable) return;
         onCardClick({ id, number, user, car, isOccupied });
-    }, [isOccupied, id]);
+    }, [isOccupied, id, unUsable]);
 
     let details;
 
-    if (isOccupied) {
+    if (unUsable) {
+        details = (
+            <Typography variant="body1" component="p">
+                Not usable
+			</Typography>
+        );
+    }
+    else if (isOccupied) {
         details = (
             <>
                 <Typography variant="body2" component="p">
@@ -64,10 +75,10 @@ const GridItem = ({ number, id, isOccupied, user, car, onCardClick }) => {
     }
 
     return (
-        <Grid className={classes.card} item xs={3} sm={3} onClick={handleGridItemClick}>
-            <Paper className={clsx(classes.paper, isOccupied && classes.occupied)}>
+        <Grid className={classes.card} item xs={3} sm={3} onClick={unUsable ? null : handleGridItemClick}>
+            <Paper className={clsx(classes.paper, isOccupied && classes.occupied, unUsable && classes.unUsable)}>
                 <Typography className={classes.spotNumber} variant="caption">
-                    {number}
+                    {!unUsable && number}
                 </Typography>
                 {details}
             </Paper>

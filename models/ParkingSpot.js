@@ -3,6 +3,7 @@ const { model, Schema } = require('mongoose');
 const parkingSpotSchema = new Schema({
     number: Number,
     isOccupied: Boolean,
+    unUsable: Boolean,
     createdAt: Date,
     occupiedAt: Date,
     releasedAt: Date,
