@@ -1,10 +1,12 @@
 
 import { h, Component } from 'preact';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useContext } from 'preact/hooks';
 import clsx from 'clsx';
+
+import { AuthContext } from './../../context/auth';
+
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
-
 import Grid from '@material-ui/core/Grid'; 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -13,6 +15,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
     paper: {
         padding: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
         textAlign: 'center',
         color: theme.palette.text.secondary,
         height: 140
@@ -24,7 +29,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: blueGrey['200']
     },
     mySpot: {
-        backgroundColor: blue['200']
+        backgroundColor: blue['100']
     },
     card: {
         maxHeight: 150,
@@ -38,8 +43,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const isCurrentUser = (user, contextUser) => user && user.id && contextUser && contextUser.id && user.id === contextUser.id;
 
-const GridItem = ({ number, id, isOccupied, unUsable, user, car, onCardClick }) => {
+const GridItem = ({ number, id, isOccupied, unUsable, user, contextUser, car, onCardClick }) => {
     const classes = useStyles();
     const handleGridItemClick = useCallback((event) => {
         if(unUsable) return;
@@ -76,7 +82,7 @@ const GridItem = ({ number, id, isOccupied, unUsable, user, car, onCardClick }) 
 
     return (
         <Grid className={classes.card} item xs={3} sm={3} onClick={unUsable ? null : handleGridItemClick}>
-            <Paper className={clsx(classes.paper, isOccupied && classes.occupied, unUsable && classes.unUsable)}>
+            <Paper className={clsx(classes.paper, isOccupied && classes.occupied, isCurrentUser(user, contextUser) && classes.mySpot, unUsable && classes.unUsable)}>
                 <Typography className={classes.spotNumber} variant="caption">
                     {!unUsable && number}
                 </Typography>

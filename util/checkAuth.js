@@ -19,10 +19,12 @@ const checkAuth = context => {
             }
         }
 
-        throw new Error("Authentication token must be 'Bearer [token]'");
+        throw new AuthenticationError(
+            "Authentication token must be 'Bearer [token]'"
+        );
     }
 
-    throw new Error('Authorization header must be provided');
+    throw new AuthenticationError('Authorization header must be provided');
 };
 
 const checkAdminAuth = context => {

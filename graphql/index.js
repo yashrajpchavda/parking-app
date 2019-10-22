@@ -12,7 +12,7 @@ const {
     validateAssignCarInput
 } = require('./../util/validators');
 
-// const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
+const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
 const Car = require('../models/Car');
@@ -108,24 +108,28 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        getParkingSpots: async () => {
-            const spots = await ParkingSpot.find()
+        getParkingSpots: (_, args, context) => {
+            checkAuth(context);
+
+            return ParkingSpot.find()
                 .sort('number')
                 .populate('user')
                 .populate('car');
-            return spots;
         },
-        getAllUsers: () =>
-            User.find({ isAdmin: { $ne: true } }).populate('cars'),
+        getAllUsers: (_, args, context) => {
+            checkAuth(context);
+            return User.find({ isAdmin: { $ne: true } }).populate('cars');
+        },
         getAllCars: () => Car.find()
     },
 
     Mutation: {
         createParkingSpot: async (
             _,
-            { parkingSpot: { number, unUsable = false } }
+            { parkingSpot: { number, unUsable = false } },
+            context
         ) => {
-            // checkAdminAuth(context);
+            checkAdminAuth(context);
 
             try {
                 if (!number || number < 1) {
@@ -154,9 +158,10 @@ const resolvers = {
                     email,
                     cars
                 }
-            }
+            },
+            context
         ) => {
-            // checkAdminAuth(context);
+            checkAdminAuth(context);
             const { valid, errors } = validateAddUserInput(
                 displayName,
                 email,
@@ -229,8 +234,8 @@ const resolvers = {
             };
         },
 
-        occupyParkingSpot: async (_, { toggleInput }) => {
-            // checkAuth(context);
+        occupyParkingSpot: async (_, { toggleInput }, context) => {
+            checkAuth(context);
 
             const { spotId, carId, userId } = toggleInput;
             const { valid, errors } = validateOccupyParkingSpotInput(
@@ -292,8 +297,8 @@ const resolvers = {
             }
         },
 
-        releaseParkingSpot: async (_, { toggleInput }) => {
-            // checkAuth(context);
+        releaseParkingSpot: async (_, { toggleInput }, context) => {
+            checkAuth(context);
 
             const { spotId } = toggleInput;
             const { valid, errors } = validateReleaseParkingSpotInput(
@@ -330,8 +335,8 @@ const resolvers = {
             }
         },
 
-        createCar: (_, { carInput }) => {
-            // checkAdminAuth(context);
+        createCar: (_, { carInput }, context) => {
+            checkAdminAuth(context);
 
             const { name, plate } = carInput;
             const { valid, errors } = validateCreateCarInput(carInput);

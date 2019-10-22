@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
 import { ApolloProvider } from '@apollo/react-hooks';
 
@@ -11,8 +12,17 @@ const httpLink = createHttpLink({
     uri: '/graphql'
 });
 
+const setAuthorizationLink = setContext(() => {
+    const jwtToken = localStorage.getItem('jwtToken');
+    return {
+        headers: {
+            Authorization: jwtToken ? `Bearer ${jwtToken}` : ''
+        }
+    }
+})
+
 const client = new ApolloClient({
-    link: httpLink,
+    link: setAuthorizationLink.concat(httpLink),
     cache: new InMemoryCache()
 });
 

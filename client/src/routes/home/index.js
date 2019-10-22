@@ -43,10 +43,10 @@ const GET_PARKING_SPOTS = gql`
 `;
 
 const Home = () => {
-	const { user } = useContext(AuthContext);
+	const { user: contextUser } = useContext(AuthContext);
 
 	// route to login if user does not exist
-	if (!user) {
+	if (!contextUser) {
 		route('/login');
 	}
 
@@ -85,7 +85,7 @@ const Home = () => {
 		loading ?
 			<h1>Loading...</h1> :
 			(<div class={style.home}>
-				<Typography variant="h5">Choose / release a parking spot</Typography>
+				<Typography variant="h5">Update parking spot</Typography>
 				<div className={classes.root}>
 					<Grid
 						container
@@ -105,6 +105,7 @@ const Home = () => {
 									user={user}
 									car={car}
 									onCardClick={handleCardClick}
+									contextUser={contextUser}
 									key={number}
 								/>
 							)
