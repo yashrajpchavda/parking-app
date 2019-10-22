@@ -25,7 +25,7 @@ function generateToken(user) {
             isAdmin: user.isAdmin,
             displayName: user.displayName
         },
-        process.env.SECRET_KEY || 'very secret key',
+        process.env.JWT_SECRET_KEY || 'very secret key',
         { expiresIn: '5m' }
     );
 }

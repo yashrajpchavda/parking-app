@@ -11,7 +11,7 @@ const checkAuth = context => {
             try {
                 const user = jwt.verify(
                     token,
-                    process.env.SECRET_KEY || 'very secret key'
+                    process.env.JWT_SECRET_KEY || 'very secret key'
                 );
                 return user;
             } catch (err) {

@@ -24,7 +24,7 @@ app.get('*', (req, res) => {
 });
 
 const connectionString =
-    process.env.MONGODB_URL ||
+    process.env.MONGODB_URI ||
     'mongodb://parking-app-user:test123@localhost:27017/parking-app?retryWrites=true';
 
 mongoose
