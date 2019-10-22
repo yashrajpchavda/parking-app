@@ -12,7 +12,9 @@ const port = process.env.PORT || 8000;
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req }) => ({ req })
+    context: ({ req }) => ({ req }),
+    introspection: true,
+    playground: true
 });
 
 server.applyMiddleware({ app });
