@@ -26,7 +26,7 @@ function generateToken(user) {
             displayName: user.displayName
         },
         process.env.JWT_SECRET_KEY || 'very secret key',
-        { expiresIn: '5m' }
+        { expiresIn: '1h' }
     );
 }
 
@@ -118,7 +118,9 @@ const resolvers = {
         },
         getAllUsers: (_, args, context) => {
             checkAuth(context);
-            return User.find({ isAdmin: { $ne: true } }).populate('cars');
+            return User.find({ isAdmin: { $ne: true } })
+                .sort('displayName')
+                .populate('cars');
         },
         getAllCars: () => Car.find()
     },
