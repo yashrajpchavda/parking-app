@@ -158,49 +158,53 @@ const resolvers = {
                     email,
                     cars
                 }
-            },
-            context
-        ) => {
-            checkAdminAuth(context);
-            const { valid, errors } = validateAddUserInput(
-                displayName,
-                email,
-                password,
-                confirmPassword
-            );
-
-            // eslint-disable-next-line no-param-reassign
-            cars = cars || [];
-
-            if (!valid) {
-                throw new UserInputError('Errors', { errors });
             }
+        ) =>
+            // context
+            {
+                // checkAdminAuth(context);
+                const { valid, errors } = validateAddUserInput(
+                    displayName,
+                    email,
+                    password,
+                    confirmPassword
+                );
 
-            const existingUser = await User.findOne({ email });
+                // eslint-disable-next-line no-param-reassign
+                cars = cars || [];
 
-            if (existingUser) {
-                throw new UserInputError('User with the email already exists', {
-                    errors: {
-                        email: 'The user with the email already exists'
-                    }
+                if (!valid) {
+                    throw new UserInputError('Errors', { errors });
+                }
+
+                const existingUser = await User.findOne({ email });
+
+                if (existingUser) {
+                    throw new UserInputError(
+                        'User with the email already exists',
+                        {
+                            errors: {
+                                email: 'The user with the email already exists'
+                            }
+                        }
+                    );
+                }
+
+                const hashedPassword = await bcrypt.hash(password, 12);
+
+                const newUser = new User({
+                    email,
+                    displayName,
+                    password: hashedPassword,
+                    isAdmin: true,
+                    cars,
+                    createdAt: new Date()
                 });
-            }
 
-            const hashedPassword = await bcrypt.hash(password, 12);
+                await newUser.save();
 
-            const newUser = new User({
-                email,
-                displayName,
-                password: hashedPassword,
-                isAdmin: false,
-                cars,
-                createdAt: new Date()
-            });
-
-            await newUser.save();
-
-            return User.findById(newUser.id).populate('cars');
-        },
+                return User.findById(newUser.id).populate('cars');
+            },
 
         login: async (_, { email, password }) => {
             const { errors, valid } = validateLoginInput(email, password);
