@@ -20,6 +20,7 @@ const RELEASE_PARKING_SPOT = gql`
             user {
                 id
                 displayName
+                mobile
             }
             car {
                 id

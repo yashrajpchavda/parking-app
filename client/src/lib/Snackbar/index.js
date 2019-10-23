@@ -78,7 +78,6 @@ SnackbarContentWrapper.propTypes = {
 }
 
 function AppSnackbar({ anchorOrigin = { vertical: 'top', horizontal: 'center' }, open = false, autoHideDuration = 6000, onClose, ...rest }) {
-    debugger;
     return (
         <Snackbar
             anchorOrigin={anchorOrigin}
