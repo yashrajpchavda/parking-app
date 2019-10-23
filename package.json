@@ -13,6 +13,7 @@
   "dependencies": {
     "apollo-server-express": "^2.9.6",
     "bcryptjs": "^2.4.3",
+    "cron": "^1.7.2",
     "express": "^4.17.1",
     "graphql": "^14.5.8",
     "jsonwebtoken": "^8.5.1",

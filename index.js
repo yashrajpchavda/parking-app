@@ -3,6 +3,7 @@ const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
 const mongoose = require('mongoose');
 
+const { initResetSlotsCron } = require('./crons/resetSlots');
 const { resolvers, typeDefs } = require('./graphql');
 
 const app = express();
@@ -40,4 +41,5 @@ mongoose
     })
     .then(() => {
         console.log(`Server started on http://localhost:${port}`);
+        initResetSlotsCron();
     });

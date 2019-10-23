@@ -17,6 +17,14 @@ const parkingSpotSchema = new Schema({
     }
 });
 
+// eslint-disable-next-line func-names
+parkingSpotSchema.statics.releaseAllSlots = function() {
+    return this.updateMany(
+        {},
+        { user: null, car: null, isOccupied: false, occupiedAt: null }
+    );
+};
+
 const ParkingSpot = model('ParkingSpot', parkingSpotSchema);
 
 module.exports = ParkingSpot;
