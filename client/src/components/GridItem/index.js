@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        padding: theme.spacing(2),
+        padding: theme.spacing(0.5),
         display: 'flex',
         justifyContent: 'center',
         flexDirection: 'column',
@@ -40,6 +40,10 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         left: 10,
         top: 5
+    },
+    phoneLink: {
+        fontSize: '0.85rem',
+        color: blue['500']
     }
 }));
 
@@ -51,6 +55,12 @@ const GridItem = ({ number, id, isOccupied, unUsable, user, contextUser, car, on
         if(unUsable) return;
         onCardClick({ id, number, user, car, isOccupied });
     }, [isOccupied, id, unUsable]);
+
+    const stopPropagation = useCallback(
+        (e) => {
+            e.stopPropagation();
+        }
+    )
 
     let details;
 
@@ -70,6 +80,7 @@ const GridItem = ({ number, id, isOccupied, unUsable, user, contextUser, car, on
                 <Typography variant="body2" component="p">
                     {car.plate}
                 </Typography>
+                <a href={`tel:${user.mobile}`} className={classes.phoneLink} onClick={stopPropagation}>{user.mobile}</a>
             </>
         );
     } else {

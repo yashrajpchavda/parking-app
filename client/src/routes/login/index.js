@@ -107,6 +107,7 @@ const Login = (props) => {
                             id="email"
                             label="Email Address"
                             name="email"
+                            type="email"
                             autoComplete="email"
                             value={formValues.email}
                             onChange={handleOnFormFieldChange}

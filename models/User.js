@@ -5,6 +5,7 @@ const userSchema = new Schema({
     password: String,
     email: String,
     isAdmin: Boolean,
+    mobile: String,
     createdAt: Date,
     updatedAt: Date,
     cars: [

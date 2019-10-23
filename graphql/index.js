@@ -47,6 +47,7 @@ const typeDefs = gql`
         id: ID!
         displayName: String!
         email: String!
+        mobile: String!
         cars: [Car]
         isAdmin: Boolean
         createdAt: String

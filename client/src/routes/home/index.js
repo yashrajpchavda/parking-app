@@ -37,6 +37,7 @@ const GET_PARKING_SPOTS = gql`
 			user {
 				id
 				displayName
+				mobile
 			}
 		}
 	}
