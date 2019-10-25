@@ -26,7 +26,7 @@ function generateToken(user) {
             displayName: user.displayName
         },
         process.env.JWT_SECRET_KEY || 'very secret key',
-        { expiresIn: '1h' }
+        { expiresIn: '365d' }
     );
 }
 
