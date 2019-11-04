@@ -8,7 +8,7 @@ function initResetSlotsCron() {
     //     ParkingSpot.releaseAllSlots();
     // });
     return new CronJob(
-        '* 20 12 * * *',
+        '* 10 1 * * *',
         () => {
             console.log('cron executed at', Date.now());
             ParkingSpot.releaseAllSlots(slots =>
