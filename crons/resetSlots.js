@@ -8,7 +8,7 @@ function initResetSlotsCron() {
     //     ParkingSpot.releaseAllSlots();
     // });
     return new CronJob(
-        '* * 0 * * *',
+        '* 20 12 * * *',
         () => {
             console.log('cron executed at', Date.now());
             ParkingSpot.releaseAllSlots(slots =>
@@ -16,7 +16,8 @@ function initResetSlotsCron() {
             );
         },
         null,
-        true
+        true,
+        'Asia/Kolkata'
     );
 }
 
