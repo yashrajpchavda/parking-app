@@ -16,6 +16,7 @@ const { checkAuth, checkAdminAuth } = require('./../util/checkAuth');
 const ParkingSpot = require('../models/ParkingSpot');
 const User = require('../models/User');
 const Car = require('../models/Car');
+const Login = require('../models/Login');
 
 function generateToken(user) {
     return jwt.sign(
@@ -109,8 +110,10 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        getParkingSpots: (_, args, context) => {
+        getParkingSpots: async (_, args, context) => {
             checkAuth(context);
+
+            await Login.handleFirstLogin();
 
             return ParkingSpot.find()
                 .sort('number')

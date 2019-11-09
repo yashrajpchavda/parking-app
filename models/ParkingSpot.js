@@ -18,9 +18,9 @@ const parkingSpotSchema = new Schema({
 });
 
 // eslint-disable-next-line func-names
-parkingSpotSchema.statics.releaseAllSlots = async function(cb) {
+parkingSpotSchema.statics.releaseAllSlots = async function() {
     console.log('releasing');
-    const spots = await this.model('ParkingSpot').updateMany(
+    return this.model('ParkingSpot').updateMany(
         {},
         {
             user: null,
@@ -29,7 +29,6 @@ parkingSpotSchema.statics.releaseAllSlots = async function(cb) {
             occupiedAt: null
         }
     );
-    if (cb) cb(spots);
 };
 
 const ParkingSpot = model('ParkingSpot', parkingSpotSchema);

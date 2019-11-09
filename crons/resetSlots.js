@@ -11,9 +11,7 @@ function initResetSlotsCron() {
         '* 10 1 * * *',
         () => {
             console.log('cron executed at', Date.now());
-            ParkingSpot.releaseAllSlots(slots =>
-                console.log('cron updated slots', slots)
-            );
+            ParkingSpot.releaseAllSlots();
         },
         null,
         true,
