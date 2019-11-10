@@ -218,15 +218,15 @@ const resolvers = {
             const user = await User.findOne({ email });
 
             if (!user) {
-                errors.general = 'User not found';
-                throw new UserInputError('User not found', errors);
+                errors.operation = 'User not found';
+                throw new UserInputError('User not found', { errors });
             }
 
             const match = await bcrypt.compare(password, user.password);
 
             if (!match) {
-                errors.general = 'Wrong credentials';
-                throw new UserInputError('Wrong credentials', errors);
+                errors.operation = 'Wrong credentials';
+                throw new UserInputError('Wrong credentials', { errors });
             }
 
             const token = generateToken(user);

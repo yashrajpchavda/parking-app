@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { route } from 'preact-router';
 
 import { AuthContext } from './../../context/auth';
+import AppSnackbar from '../../lib/Snackbar';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-
 import style from './style';
 
 import { LOGIN_USER } from '../../graphql/mutations';
@@ -57,6 +57,16 @@ const Login = (props) => {
         });
     };
 
+    const handleCloseSnackbar = useCallback(
+        () => {
+            setErrors({
+                ...errors,
+                operation: null
+            });
+        },
+        [errors]
+    )
+
     const handleLoginSubmit = (event) => {
         event.preventDefault();
 
@@ -66,9 +76,11 @@ const Login = (props) => {
                 password: formValues.password
             }
         }).then(({ data: { login: userData } }) => {
+            debugger;
             context.login(userData);
             route('/');
         }).catch(err => {
+            debugger;
             const currentErrors = err.graphQLErrors[0].extensions.exception.errors;
             setErrors({
                 ...currentErrors
@@ -135,6 +147,12 @@ const Login = (props) => {
                         </Button>
                     </form>
                 </div>
+                <AppSnackbar
+                    open={!!errors.operation}
+                    message={errors.operation}
+                    variant="error"
+                    onClose={handleCloseSnackbar}
+                />
             </Container>
         </div>
     )
