@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 import { useCallback, useContext } from 'preact/hooks';
 import clsx from 'clsx';
 
-import { AuthContext } from './../../context/auth';
+import { AuthContext } from '../../../context/auth';
 
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
@@ -49,11 +49,13 @@ const useStyles = makeStyles(theme => ({
 
 const isCurrentUser = (user, contextUser) => user && user.id && contextUser && contextUser.id && user.id === contextUser.id;
 
-const GridItem = ({ number, id, isOccupied, unUsable, user, contextUser, car, onCardClick }) => {
+const ParkingSpot = ({ number, id, isOccupied, unUsable, user, car, onSpotClick }) => {
+    const { user: contextUser } = useContext(AuthContext);
+
     const classes = useStyles();
     const handleGridItemClick = useCallback((event) => {
         if(unUsable) return;
-        onCardClick({ id, number, user, car, isOccupied });
+        onSpotClick({ id, number, user, car, isOccupied });
     }, [isOccupied, id, unUsable]);
 
     const stopPropagation = useCallback(
@@ -103,4 +105,4 @@ const GridItem = ({ number, id, isOccupied, unUsable, user, contextUser, car, on
     );
 }
 
-export default GridItem;
+export default ParkingSpot;

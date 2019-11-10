@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 import { makeStyles } from '@material-ui/core/styles';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,34 +9,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-const RELEASE_PARKING_SPOT = gql`
-    mutation ReleaseParkingSpot($toggleInput: ToggleParkingSpotInput!) {
-        releaseParkingSpot(toggleInput: $toggleInput) {
-            id
-            number
-            isOccupied
-            occupiedAt
-            user {
-                id
-                displayName
-                mobile
-            }
-            car {
-                id
-                plate
-                name
-            }
-        }
-    }
-`;
-
-
-const useStyles = makeStyles(theme => ({
-
-}));
+import { RELEASE_PARKING_SPOT } from '../../graphql/mutations';
 
 const ReleaseDialogContent = ({ onDialogClose, spotData }) => {
-    const classes = useStyles();
     const [releaseParkingSpot, {data: releaseMutationData}] = useMutation(RELEASE_PARKING_SPOT);
 
     const { id: spotId } = spotData;

@@ -113,7 +113,7 @@ const resolvers = {
         getParkingSpots: async (_, args, context) => {
             checkAuth(context);
 
-            await Login.handleFirstLogin();
+            await Login.handleFirstRequestOfDay();
 
             return ParkingSpot.find()
                 .sort('number')

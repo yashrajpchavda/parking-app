@@ -1,19 +1,18 @@
-import { Component } from 'preact';
+import { h, Component } from 'preact';
 import { useState, useCallback, useContext } from 'preact/hooks';
 import { route } from 'preact-router';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 import { AuthContext } from './../../context/auth';
 
 import style from './style';
-
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import GridItem from '../../components/GridItem';
+import ParkingSpots from '../../components/ParkingSpots';
 import SpotOccupyDialog from '../../components/SpotOccupyDialog';
+
+import { GET_PARKING_SPOTS } from '../../graphql/queries';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -21,27 +20,6 @@ const useStyles = makeStyles(theme => ({
 		marginTop: 16
 	}
 }));
-
-const GET_PARKING_SPOTS = gql`
-	query GetParkingSpots {
-		getParkingSpots {
-			id
-			isOccupied
-			unUsable
-			number
-			car {
-				id
-				name
-				plate
-			}
-			user {
-				id
-				displayName
-				mobile
-			}
-		}
-	}
-`;
 
 const Home = () => {
 	const { user: contextUser } = useContext(AuthContext);
@@ -58,7 +36,7 @@ const Home = () => {
 
 	const classes = useStyles();
 
-	const handleCardClick = useCallback(({ id, number, user, car, isOccupied }) => {
+	const handleSpotClick = useCallback(({ id, number, user, car, isOccupied }) => {
 		setDialogData({
 			open: true,
 			spotData: {
@@ -71,47 +49,28 @@ const Home = () => {
 		});
 	});
 
-	const onDialogClose = () => {
+	const onDialogClose = useCallback(() => {
 		setDialogData({
 			open: false
 		});
-	}
+	});
 
 	let parkingSpots = [];
 
 	if (data) {
 		parkingSpots = data.getParkingSpots;
 	}
+
 	return (
 		loading ?
 			<h1>Loading...</h1> :
 			(<div class={style.home}>
 				<Typography variant="h5">Update parking spot</Typography>
 				<div className={classes.root}>
-					<Grid
-						container
-						direction="row"
-						justify="flex-start"
-						alignItems="stretch"
-						spacing={1}
-						className={classes.height}
-					>
-						{parkingSpots.map(({ number, isOccupied, id, user, car, unUsable }, index) => {
-							return (
-								<GridItem
-									number={number}
-									isOccupied={isOccupied}
-									unUsable={unUsable}
-									id={id}
-									user={user}
-									car={car}
-									onCardClick={handleCardClick}
-									contextUser={contextUser}
-									key={number}
-								/>
-							)
-						})}
-					</Grid>
+					<ParkingSpots
+						parkingSpots={parkingSpots}
+						handleSpotClick={handleSpotClick}
+					/>
 					<SpotOccupyDialog
 						openDialog={dialogData.open}
 						onDialogClose={onDialogClose}

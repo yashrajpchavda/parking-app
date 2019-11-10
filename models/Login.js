@@ -7,7 +7,7 @@ const loginSchema = new Schema({
 });
 
 // eslint-disable-next-line func-names
-loginSchema.statics.handleFirstLogin = async function() {
+loginSchema.statics.handleFirstRequestOfDay = async function() {
     const logins = await this.model('Login').find();
 
     if (!logins || logins.length === 0) {

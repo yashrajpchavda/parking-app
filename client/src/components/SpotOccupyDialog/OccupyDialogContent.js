@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 import { makeStyles } from '@material-ui/core/styles';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,12 +8,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 
 import AppSnackbar from './../../lib/Snackbar';
+
+import { GET_ALL_USERS } from '../../graphql/queries';
+import { OCCUPY_PARKING_SPOT } from '../../graphql/mutations';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -30,51 +31,10 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const GET_ALL_USERS = gql`
-    query GetAllUsers {
-        getAllUsers {
-            id
-            displayName
-            email
-            mobile
-            isAdmin
-            cars {
-                id
-                name
-                plate
-            }
-        }
-    }
-`;
-
-const OCCUPY_PARKING_SPOT = gql`
-    mutation OccupyParkingSpot($toggleInput: ToggleParkingSpotInput!){
-        occupyParkingSpot(toggleInput: $toggleInput) {
-            id
-            number
-            isOccupied
-            occupiedAt
-            user {
-                id
-                displayName
-                mobile
-            }
-            car {
-                id
-                plate
-                name
-            }
-        }
-    }
-`;
-
 const OccupyDialogContent = ({ onDialogClose, spotData }) => {
     const {
         id: spotId,
         number,
-        user,
-        car,
-        isOccupied
     } = spotData;
 
     const [cars, setCars] = useState([]);

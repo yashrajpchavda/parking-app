@@ -2,7 +2,6 @@ import { Component } from 'preact';
 import { useState, useCallback, useContext } from 'preact/hooks';
 import { useMutation } from '@apollo/react-hooks';
 import { route } from 'preact-router';
-import gql from 'graphql-tag';
 
 import { AuthContext } from './../../context/auth';
 
@@ -16,6 +15,8 @@ import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import style from './style';
+
+import { LOGIN_USER } from '../../graphql/mutations';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -36,17 +37,6 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(3, 0, 2),
     },
 }));
-
-const LOGIN_USER = gql`
-    mutation Login($email: String!, $password: String!) {
-        login(email: $email, password: $password) {
-            id
-            email
-            token
-            displayName
-        }
-    }
-`;
 
 const Login = (props) => {
     const context = useContext(AuthContext);
