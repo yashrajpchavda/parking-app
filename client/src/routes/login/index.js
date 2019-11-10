@@ -76,11 +76,9 @@ const Login = (props) => {
                 password: formValues.password
             }
         }).then(({ data: { login: userData } }) => {
-            debugger;
             context.login(userData);
             route('/');
         }).catch(err => {
-            debugger;
             const currentErrors = err.graphQLErrors[0].extensions.exception.errors;
             setErrors({
                 ...currentErrors
