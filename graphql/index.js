@@ -161,6 +161,7 @@ const resolvers = {
                 addUserInput: {
                     displayName,
                     password,
+                    mobile,
                     confirmPassword,
                     email,
                     cars
@@ -172,6 +173,7 @@ const resolvers = {
             const { valid, errors } = validateAddUserInput(
                 displayName,
                 email,
+                mobile,
                 password,
                 confirmPassword
             );
@@ -201,6 +203,7 @@ const resolvers = {
                 password: hashedPassword,
                 isAdmin: false,
                 cars,
+                mobile,
                 createdAt: new Date()
             });
 

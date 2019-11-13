@@ -2,12 +2,17 @@ module.exports.validateAddUserInput = (
     displayName,
     email,
     password,
+    mobile,
     confirmPassword
 ) => {
     const errors = {};
 
     if (displayName.trim() === '') {
         errors.displayName = 'Display name must not be empty';
+    }
+
+    if (mobile.trim() === '') {
+        errors.mobile = 'Invalid mobile number';
     }
 
     if (email.trim() === '') {
