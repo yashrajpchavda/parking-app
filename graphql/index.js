@@ -71,6 +71,7 @@ const typeDefs = gql`
         displayName: String!
         password: String!
         confirmPassword: String!
+        mobile: String!
         cars: [String]
     }
 
