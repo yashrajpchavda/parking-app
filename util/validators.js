@@ -1,10 +1,10 @@
-module.exports.validateAddUserInput = (
+module.exports.validateAddUserInput = ({
     displayName,
     email,
     password,
     mobile,
     confirmPassword
-) => {
+}) => {
     const errors = {};
 
     if (displayName.trim() === '') {

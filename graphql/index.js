@@ -170,13 +170,13 @@ const resolvers = {
             context
         ) => {
             checkAdminAuth(context);
-            const { valid, errors } = validateAddUserInput(
+            const { valid, errors } = validateAddUserInput({
                 displayName,
                 email,
                 mobile,
                 password,
                 confirmPassword
-            );
+            });
 
             // eslint-disable-next-line no-param-reassign
             cars = cars || [];
